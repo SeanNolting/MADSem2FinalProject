@@ -14,15 +14,16 @@ export default function MyButton({title, onPress, color}) {
 const styles = StyleSheet.create({
     button:
     {
-        backgroundColor: "Black",
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center', 
+      backgroundColor: "Black",
+      borderRadius: 25,
+      justifyContent: 'center',
+      alignItems: 'center', 
     },
-    text: {
-        color: "White",
-        fontSize: 18,
-        fontWeight: 'bold',
-    }
+    text: 
+    {
+      color:"white",
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
 
 })

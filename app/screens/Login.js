@@ -5,13 +5,15 @@ import {useNavigation} from "@react-navigation/native";
 import { auth } from '../../Firebase/config';
 import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import colors from '../config/colors';
 
 export default function Login({}) {
-    const naviagtion = useNavigation();
+    const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const auth = auth;
+
 
     const signIn = async () =>
     {
@@ -19,7 +21,8 @@ export default function Login({}) {
         try{
             const response  = await signInWithEmailAndPassword(auth, email, password);
             console.log(response);
-            alert("Check your emails");
+            alert("Welcome");
+            navigation.navigate("Create Account")
         } catch(error){
             console.log(error);
             alert("Sign in failed:" + error.message);
@@ -45,25 +48,28 @@ export default function Login({}) {
     <View styles={styles.container}>
         <Text style={styles.text}>Login Screen</Text>
         <TextInput 
+        style={styles.textInput}
         value={email}
         placeholder='Email' 
-        onChange={(text) => setEmail(text)}>
+        onChangeText={(text) => setEmail(text)}>
         </TextInput>
         <TextInput 
+        style={styles.textInput}
         secureTextEntry={true}
         value={password}
         placeholder='Password' 
-        onChange={(text) => setPassword(text)}>
+        onChangeText={(text) => setPassword(text)}>
         </TextInput>
         {loading ? <ActivityIndicator size="large" color="#0000ff"/>
         : <>
-        {/* <MyButton title={"Login"} onPress={() =>}/> */}
+        <MyButton title={"Login"} onPress={signIn} color={colors.delftBlue}/>
+        <MyButton title={"Create Account"} onPress={signUp} color={colors.delftBlue}/>
 
         </>}
         <MyButton
         title={"Go to create Screen"}
-        backgroundcolor={"Black"}
-        onPress={() => naviagtion.navigate("Create Account")}
+        color={"black"}
+        onPress={() => navigation.navigate("Create Account")}
         />
     </View>
   )
@@ -81,5 +87,15 @@ const styles = StyleSheet.create({
     {
         fontSize: 24,
         fontWeight: "bold",
+    },
+    textInput:
+    {
+        backgroundColor: "white",
+        borderColor:"black",
+        borderWidth: 2,
+        width: 350,
+        height: 50,
+        padding: 2,
+        marginBottom: 5,
     },
 })
