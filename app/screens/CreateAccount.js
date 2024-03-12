@@ -5,7 +5,7 @@ import {useNavigation} from "@react-navigation/native";
 import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
 
-export default function Login({}) {
+export default function CreateAccount({}) {
     const naviagtion = useNavigation();
     const myData = [
         {
@@ -73,6 +73,11 @@ export default function Login({}) {
         title={"Go to login"}
         backgroundcolor={"Black"}
         onPress={() => naviagtion.navigate("Login")}
+        />
+        <MyButton
+        title={"Go to Create Bio"}
+        backgroundcolor={"Black"}
+        onPress={() => naviagtion.navigate("CreateBio")}
         />
     </View>
   )
