@@ -22,7 +22,7 @@ export default function Login({}) {
             const response  = await signInWithEmailAndPassword(auth, email, password);
             console.log(response);
             alert("Welcome");
-            navigation.navigate("Create Account")
+            navigation.navigate("Home")
         } catch(error){
             console.log(error);
             alert("Sign in failed:" + error.message);
@@ -37,6 +37,7 @@ export default function Login({}) {
             const response = await createUserWithEmailAndPassword(auth, email, password);
             console.log(response);
             alert("Check your emails");
+            navigation.navigate("Create Account")
         }catch (error){
             console.log(error);
             alert("Sign Up failed:" + error.message);

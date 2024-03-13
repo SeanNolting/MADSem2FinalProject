@@ -4,33 +4,17 @@ import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
 import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 export default function CreateAccount({}) {
     const naviagtion = useNavigation();
     const myData = [
-        {
-            id: 1,
-            name: "Iowa State",
-        },
-        {
-            id: 2,
-            name: "Princton",
-        },
-        {
-            id: 3,
-            name: "Stanford",
-        },
-        {
-            id: 4,
-            name: "Purdue",
-        },
-        {
-            id: 5,
-            name: "University of Illinois",
-        },
+        {key: '1', value: "Iowa State"},
+        {key: "2", value: "MIT"},
+        {key: "3", value: "Wisconsin"},
     ]
     const[userInput, setUserInput] = useState("");
-
+    const [selected, setSelected ] = React.useState([]);
     const filterData = (item) =>
     {
         //if the input is empty
@@ -63,10 +47,14 @@ export default function CreateAccount({}) {
         </TextInput>
         <TextInput placeholder='Search for your university' onChangeText={(text) => setUserInput(text)}>
         </TextInput>
-        <FlatList
+        <SelectList
+        setSelected={(val) => setSelected(val)}
+        data ={myData}
+        save='value'
+        />
+        {/* <FlatList
         data = {myData}
-        renderItem = {({ item, index }) => (filterData(item))}/>
-
+        renderItem = {({ item, index }) => (filterData(item))}/> */}
 
         <Text style={styles.text}>Create Account Screen</Text>
         <MyButton
@@ -77,7 +65,7 @@ export default function CreateAccount({}) {
         <MyButton
         title={"Go to Create Bio"}
         backgroundcolor={"Black"}
-        onPress={() => naviagtion.navigate("CreateBio")}
+        onPress={() => naviagtion.navigate("Create Bio")}
         />
     </View>
   )
