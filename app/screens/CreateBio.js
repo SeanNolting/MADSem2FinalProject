@@ -8,6 +8,7 @@ import Select from 'react-select';
 
  
 export default function CreateBio({}) {
+    const navigation = useNavigation();
     const [selected, setSelected ] = React.useState([]);
     const [selectedOptions, setSelectedOptions]= useState([]);
     const handleChange = (selected) => {
@@ -52,6 +53,11 @@ export default function CreateBio({}) {
         title={"Go to create Screen"}
         color={"black"}
         onPress={() => navigation.navigate("Create Account")}
+        />
+        <MyButton
+        title={"Go to Home Screen"}
+        color={"black"}
+        onPress={() => navigation.navigate("Home")}
         />
     </View>
   )

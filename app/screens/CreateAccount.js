@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { SelectList } from 'react-native-dropdown-select-list';
 
 export default function CreateAccount({}) {
-    const naviagtion = useNavigation();
+    const navigation = useNavigation();
     const myData = [
         {key: '1', value: "Iowa State"},
         {key: "2", value: "MIT"},
@@ -59,13 +59,13 @@ export default function CreateAccount({}) {
         <Text style={styles.text}>Create Account Screen</Text>
         <MyButton
         title={"Go to login"}
-        backgroundcolor={"Black"}
-        onPress={() => naviagtion.navigate("Login")}
+        color={"black"}
+        onPress={() => navigation.navigate("Login")}
         />
         <MyButton
         title={"Go to Create Bio"}
-        backgroundcolor={"Black"}
-        onPress={() => naviagtion.navigate("Create Bio")}
+        color={"black"}
+        onPress={() => navigation.navigate("Create Bio")}
         />
     </View>
   )
