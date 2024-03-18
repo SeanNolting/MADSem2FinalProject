@@ -5,6 +5,7 @@ import {useNavigation} from "@react-navigation/native";
 import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
 import { SelectList } from 'react-native-dropdown-select-list';
+import { collection, addDoc } from "firebase/firestore";
 
 export default function CreateAccount({}) {
     const navigation = useNavigation();
