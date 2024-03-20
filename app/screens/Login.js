@@ -2,11 +2,12 @@ import { ActivityIndicator, StyleSheet, Text, View, } from 'react-native'
 import React from 'react'
 import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
-import { auth } from '../../Firebase/config';
+import { auth, db } from '../../Firebase/config';
 import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import colors from '../config/colors';
+import { setDoc } from 'firebase/firestore';
 
 export default function Login({}) {
     const navigation = useNavigation();
@@ -14,6 +15,21 @@ export default function Login({}) {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
+
+
+    const createDataBase = async () => 
+    {
+        try{
+            const docRef = await setDoc(doc(db, "user_information"), {
+                email: email,
+                password: password,
+            });
+        } catch(e)
+        {
+            console.error("Erorr adding document: ", e);
+        }
+    }
+ 
 
     const signIn = async () =>
     {
@@ -34,9 +50,10 @@ export default function Login({}) {
     {
         setLoading(true);
         try{
-            const response = await createUserWithEmailAndPassword(auth, email, password);
+            const response = await createUserWithEmailAndPassword(auth, email, password)
             console.log(response);
             alert("Check your emails");
+            createDataBase();
             navigation.navigate("Create Account")
         }catch (error){
             console.log(error);

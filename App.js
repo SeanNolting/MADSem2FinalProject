@@ -13,7 +13,7 @@ import Friends from './app/screens/Friends';
 import Groups from './app/screens/Groups';
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Icon } from 'react-native-vector-icons/Icon';
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -38,15 +38,7 @@ function MyDrawer()
 export default function App() {
   return (
     <NavigationContainer>
-    <Stack.Navigator initialRouteName='Login' screenOptions={{headerLeft: () => {
-      return(
-      <Icon
-      name='home'
-      size={30}
-      color={"#FFFFFF"}
-      />
-      )
-    }}}>
+    <Stack.Navigator initialRouteName='Login' >
       <Stack.Screen name = "Login" component={Login}/>
       <Stack.Screen name = "Create Account" component={CreateAccount}/>
       <Stack.Screen name = "Create Bio" component={CreateBio}/>

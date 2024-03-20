@@ -41,13 +41,16 @@ export default function CreateAccount({}) {
     }
   return (
     <View styles={styles.container}>
+        <Text style={styles.text}>Create Account Screen</Text>
+        <TextInput placeholder='Name'
         
-        <TextInput placeholder='Name'>
+        >
         </TextInput>
         <TextInput placeholder='Major'>
         </TextInput>
-        <TextInput placeholder='Search for your university' onChangeText={(text) => setUserInput(text)}>
-        </TextInput>
+        {/* <TextInput placeholder='Search for your university' onChangeText={(text) => setUserInput(text)}>
+        </TextInput> */}
+        <Text>Seach for your university</Text>
         <SelectList
         setSelected={(val) => setSelected(val)}
         data ={myData}
@@ -56,8 +59,6 @@ export default function CreateAccount({}) {
         {/* <FlatList
         data = {myData}
         renderItem = {({ item, index }) => (filterData(item))}/> */}
-
-        <Text style={styles.text}>Create Account Screen</Text>
         <MyButton
         title={"Go to login"}
         color={"black"}
@@ -84,6 +85,12 @@ const styles = StyleSheet.create({
     {
         fontSize: 24,
         fontWeight: "bold",
+    },
+    textInputStyle:
+    {
+        borderWidth: 2,
+        borderColor: "#000000"
+
     },
     flatlistStyle:
     {
