@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, Text, View, } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
@@ -7,6 +7,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import colors from '../config/colors';
+import { Icon } from '@rneui/base';
 
 export default function Login({}) {
     const navigation = useNavigation();
@@ -15,8 +16,6 @@ export default function Login({}) {
     const [loading, setLoading] = useState(false);
     
 
-    
-    
     const signIn = async () =>
     {
         setLoading(true);
@@ -50,6 +49,7 @@ export default function Login({}) {
   return (
     <View styles={styles.container}>
         <Text style={styles.text}>Login Screen</Text>
+        <Image source={require('./assests/splash.png')}/>
         <TextInput 
         style={styles.textInput}
         value={email}

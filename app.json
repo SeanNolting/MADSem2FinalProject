@@ -4,10 +4,10 @@
     "slug": "MADSem2FinalProject",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": ".app/assets/social-sphere-high-resolution-logo-white.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": ".app/assets/social-sphere-high-resolution-logo-white.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,12 +19,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": ".app/assets/social-sphere-high-resolution-logo-white.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": ".app/assets/social-sphere-high-resolution-logo-white.png"
     }
   }
 }
