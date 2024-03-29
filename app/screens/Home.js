@@ -14,7 +14,7 @@ export default function Home() {
     <Drawer.Navigator
     initialRouteName='Main'
     backBehavior='initialRoute'
-    screenOptions={{headerShown: false}}>
+    screenOptions={{headerShown: true}}>
        <Drawer.Screen name = "Social Shphere" component={Main}/>
        <Drawer.Screen name = "Edit Profile" component={EditProfile}/>
        <Drawer.Screen name = "Friends" component={Friends} />

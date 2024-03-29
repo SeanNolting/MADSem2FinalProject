@@ -25,9 +25,9 @@ export default function CreateBio({}) {
     ]
     const myDataOptions = [
       {value:'running', label:"Running"},
-      {value:'reading',label:"Reading"},
-      {value:'coding',label:"Coding"},
-      {value:'baseketball',label:"Coding"},
+      {value:'reading', label:"Reading"},
+      {value:'coding', label:"Coding"},
+      {value:'baseketball', label:"Coding"},
       {value:'knitting', label:"Knitting"},
       {value:'race car rriving', label:"Race Car Driving"},
     ]
@@ -47,9 +47,7 @@ export default function CreateBio({}) {
         onSelect={() => console.log(selected)}
         notFoundText='Search for a hobbie'
         />
-    
-
-         <MyButton
+        <MyButton
         title={"Go to create Screen"}
         color={"black"}
         onPress={() => navigation.navigate("Create Account")}

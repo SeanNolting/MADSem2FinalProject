@@ -48,8 +48,9 @@ export default function Login({}) {
     }
   return (
     <View styles={styles.container}>
-        <Text style={styles.text}>Login Screen</Text>
-        <Image source={require('./assests/splash.png')}/>
+        <Text style={styles.headerStyle}>Social Sphere</Text>
+        <Image style={styles.image} 
+        source={require('../../images/social-sphere-high-resolution-logo-white.png')}/>
         <TextInput 
         style={styles.textInput}
         value={email}
@@ -67,7 +68,6 @@ export default function Login({}) {
         : <>
         <MyButton title={"Login"} onPress={signIn} color={colors.delftBlue}/>
         <MyButton title={"Create Account"} onPress={signUp}color={colors.delftBlue}/>
-
         </>}
         <MyButton
         title={"Go to create Screen"}
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        backgroundColor: "blue",
     },
     text:
     {
@@ -100,5 +101,21 @@ const styles = StyleSheet.create({
         height: 50,
         padding: 2,
         marginBottom: 5,
+        marginTop: 15,
+        marginLeft: 20,
     },
+    image:
+    {
+        height: 200,
+        width: 200,
+        marginLeft: 100,
+    },
+    headerStyle:
+    {
+        fontSize: 48,
+        fontWeight: "bold",
+        alignItems: "center",
+        justifyContent: "center",
+        marginLeft: 50,
+    }
 })
