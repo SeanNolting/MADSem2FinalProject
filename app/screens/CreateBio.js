@@ -1,16 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TextInput } from 'react-native'
 import React from 'react'
 import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-list';
 import { useState } from 'react';
 import {useNavigation} from "@react-navigation/native";
 import MyButton from '../components/MyButton';
 import Select from 'react-select';
+// import { TextInput } from 'react-native-gesture-handler';
+import colors from '../config/colors';
 
  
 export default function CreateBio({}) {
     const navigation = useNavigation();
     const [selected, setSelected ] = React.useState([]);
     const [selectedOptions, setSelectedOptions]= useState([]);
+    const [bio, setBio] = useState("");
+    const [extraInfo, setExtraInfo] = useState("");
     const handleChange = (selected) => {
       setSelectedOptions(selected)
     }
@@ -33,19 +37,38 @@ export default function CreateBio({}) {
     ]
 
       return (
-    <View>
+    <View style={styles.container}>
         {/* <SelectList
         setSelected={(val) => setSelected(val)}
         data ={Mydata}
         save='value'
         /> */}
+        <Text style={styles.headerTextStyle}>Select some hobbies</Text>
         <MultipleSelectList
         setSelected={(val) => setSelected(val)}
         data={myData}
         label="Hobbies"
         save='key'
         onSelect={() => console.log(selected)}
-        notFoundText='Search for a hobbie'
+        notFoundText='Search for a hobby'
+        boxStyles={[{backgroundColor: "white"}, {width:250}]}
+        dropdownStyles={{backgroundColor: "white"}}
+        />
+        <TextInput
+          multiline
+          style={styles.textInputStyle}
+          value={bio}
+          placeholder='Biography' 
+          placeholderTextColor="#000000"
+          onChangeText={(text) => setBio(text)}
+        />
+        <TextInput
+          multiline
+          style={styles.textInputStyle}
+          value={extraInfo}
+          placeholder='Extra info' 
+          placeholderTextColor="#000000"
+          onChangeText={(text) => setExtraInfo(text)}
         />
         <MyButton
         title={"Go to create Screen"}
@@ -61,4 +84,30 @@ export default function CreateBio({}) {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+  container:
+  {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "flex-start",
+      backgroundColor: colors.delftBlue,
+  },
+  textInputStyle:
+  {
+    borderWidth: 2,
+    borderColor: "#000000",
+    width: 350,
+    height: 100,
+    marginLeft: 10,
+    padding: 5,
+    marginTop: 10,
+    backgroundColor: "white"
+  },
+  headerTextStyle:
+  {
+    fontSize: 32,
+    marginLeft: 10,
+  },
+
+})

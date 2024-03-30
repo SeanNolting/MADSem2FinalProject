@@ -1,11 +1,12 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, Text, View, TextInput } from 'react-native'
 import React from 'react'
 import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
-import { TextInput } from 'react-native-gesture-handler';
+// import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { collection, addDoc } from "firebase/firestore";
+import colors from '../config/colors';
 
 export default function CreateAccount({}) {
     const navigation = useNavigation();
@@ -14,8 +15,11 @@ export default function CreateAccount({}) {
         {key: "2", value: "MIT"},
         {key: "3", value: "Wisconsin"},
     ]
-    const[userInput, setUserInput] = useState("");
+    const [userInput, setUserInput] = useState("");
     const [selected, setSelected ] = React.useState([]);
+    const [major, setMajor]= useState("");
+    const [firstName, setFirstName]= useState("");
+    const [lastName, setLastName]= useState("");
     const filterData = (item) =>
     {
         //if the input is empty
@@ -26,7 +30,6 @@ export default function CreateAccount({}) {
             <Text>{item.name}</Text>
             </View>
             ) 
-
         }
         // if the user is in the search bar
         if(item.name.toLowerCase().includes(userInput.toLowerCase()  )){
@@ -35,23 +38,38 @@ export default function CreateAccount({}) {
                 <Text>{item.name}</Text>
             </View>
             )
-            
         }
 
     }
   return (
-    <View styles={styles.container}>
+    <View style={styles.container}>
         <Text style={styles.text}>Create Account Screen</Text>
-        <TextInput placeholder='Name'
-        
-        >
-        </TextInput>
-        <TextInput placeholder='Major'>
-        </TextInput>
+        <View style={styles.namesContainer}>
+            <TextInput
+        value={firstName}
+        placeholder='First Name' 
+        onChangeText={(text) => setFirstName(text)}
+        style={styles.nameInputStyle}
+        />
+          <TextInput
+        value={lastName}
+        placeholder='Last Name' 
+        onChangeText={(text) => setLastName(text)}
+        style={styles.nameInputStyle}
+        />
+        </View>
+        <TextInput
+        value={major}
+        placeholder='Major' 
+        onChangeText={(text) => setMajor(text)}
+        style={styles.majorInputStyle}
+        />
         {/* <TextInput placeholder='Search for your university' onChangeText={(text) => setUserInput(text)}>
         </TextInput> */}
-        <Text>Seach for your university</Text>
-        <SelectList
+        <Text style={styles.text}>Seach for your university</Text>
+        <SelectList 
+        boxStyles={[{backgroundColor: "white"}, {width:250}]}
+        dropdownStyles={{backgroundColor: "white"}}
         setSelected={(val) => setSelected(val)}
         data ={myData}
         save='value'
@@ -79,22 +97,42 @@ const styles = StyleSheet.create({
     {
         flex: 1,
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
+        backgroundColor: colors.delftBlue,
+    },
+    namesContainer:
+    {
+        alignItems: "center",
+        flexDirection:"row"
     },
     text:
     {
         fontSize: 24,
         fontWeight: "bold",
     },
-    textInputStyle:
+    nameInputStyle:
     {
         borderWidth: 2,
-        borderColor: "#000000"
-
+        borderColor: "#000000",
+        height: 50,
+        width: 150,
+        marginTop: 10,
+        marginLeft: 5,
+        backgroundColor: "white",
+    },
+    majorInputStyle:
+    {
+        borderWidth: 2,
+        borderColor: "#000000",
+        height: 50,
+        width: 300,
+        marginTop: 10,
+        marginLeft: 5,
+        backgroundColor: "white",
     },
     flatlistStyle:
     {
-
+        backgroundColor: "white",
     },
     flastListTextStyle:
     {

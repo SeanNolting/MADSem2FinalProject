@@ -1,9 +1,9 @@
-import { ActivityIndicator, StyleSheet, Text, View, Image } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View, Image, TextInput } from 'react-native'
 import React from 'react'
 import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
 import { FIREBASEAPP, auth, db } from '../../Firebase/config';
-import { TextInput } from 'react-native-gesture-handler';
+// import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import colors from '../config/colors';
@@ -47,7 +47,7 @@ export default function Login({}) {
         }
     }
   return (
-    <View styles={styles.container}>
+    <View style={styles.container}>
         <Text style={styles.headerStyle}>Social Sphere</Text>
         <Image style={styles.image} 
         source={require('../../images/social-sphere-high-resolution-logo-white.png')}/>
@@ -84,8 +84,8 @@ const styles = StyleSheet.create({
     {
         flex: 1,
         alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "blue",
+        justifyContent: "flex-start",
+        backgroundColor: colors.delftBlue,
     },
     text:
     {
@@ -100,15 +100,15 @@ const styles = StyleSheet.create({
         width: 350,
         height: 50,
         padding: 2,
-        marginBottom: 5,
-        marginTop: 15,
-        marginLeft: 20,
+        marginBottom: 15,
+        marginTop: 5,
+        marginLeft: 10,
     },
     image:
     {
         height: 200,
         width: 200,
-        marginLeft: 100,
+        marginLeft: 10,
     },
     headerStyle:
     {
@@ -116,6 +116,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         alignItems: "center",
         justifyContent: "center",
-        marginLeft: 50,
+        marginLeft: 10,
     }
 })
