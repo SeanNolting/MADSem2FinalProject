@@ -8,6 +8,8 @@ import Main from './app/screens/Main';
 import EditProfile from './app/screens/EditProfile';
 import Friends from './app/screens/Friends';
 import Groups from './app/screens/Groups';
+import Favorites from './app/screens/Favorites'
+import ViewMore from './app/screens/ViewMore'
 
 
 const Drawer = createDrawerNavigator();
@@ -45,6 +47,12 @@ export default function Home() {
        <Drawer.Screen 
        name = "Groups" 
        component={Groups}/>
+        <Drawer.Screen 
+       name = "Favorites" 
+       component={Favorites}/>
+        <Drawer.Screen 
+       name = "View More" 
+       component={ViewMore}/>
    </Drawer.Navigator> 
   )
 }
