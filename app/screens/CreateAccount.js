@@ -1,5 +1,5 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View, TextInput } from 'react-native'
-import React from 'react'
+import { FlatList, SafeAreaView, StyleSheet, Text, View, TextInput, Image, TouchableHighlight, TouchableOpacity, Platform } from 'react-native'
+import React, { useEffect } from 'react'
 import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
 // import { TextInput } from 'react-native-gesture-handler';
@@ -7,10 +7,15 @@ import { useState } from 'react';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { collection, addDoc } from "firebase/firestore";
 import colors from '../config/colors';
+import Entypo from 'react-native-vector-icons/Entypo';
+// import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
+import placeholderImage from '../assets/emptyPhoto.jpg';
+import { launchImageLibraryAsync } from 'expo-image-picker';
 
 export default function CreateAccount({}) {
     const navigation = useNavigation();
-    const myData = [
+    const myDataUniverites = [
         {key: '1', value: "Iowa State"},
         {key: "2", value: "MIT"},
         {key: "3", value: "Wisconsin"},
@@ -41,11 +46,57 @@ export default function CreateAccount({}) {
         }
 
     }
+
+    const [image, setImage] = useState(placeholderImage);
+    console.log(image);
+
+    // useEffect(() => {
+    //    requestMediaLibraryPermissionsAsync();
+    // }, []);
+    // const requestMediaLibraryPermissionsAsync = async () => {
+    //     if(Platform.OS !== 'web')
+    //     {
+    //         const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    //         if(status !== 'granted')
+    //         {
+    //             alert("Camera Roll access is required to upload a profile picture")
+    //         }
+    //     }
+    // }
+
+    const pickImage = async () =>
+    {
+        try{
+            let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4,3],
+            quality: 1,
+        });
+    
+
+    console.log(image);
+    if (!result.cancelled){
+        setImage(result.uri);
+        console.log(result)
+        //This is where i would upload the url or key to save the image data to the user
+      }    
+    
+    } catch(error)
+        {
+            console.error("Error picking image", error);
+        }
+    };
+
   return (
     <View style={styles.container}>
         <Text style={styles.text}>Create Account Screen</Text>
+        { image && image.uri && <Image source={{uri: image.uri}} style={{ width: 200, height: 200}} /> }
+        <TouchableOpacity onPress={pickImage}>
+            <Entypo name = "pencil" size={20} color="white"/>
+        </TouchableOpacity>
         <View style={styles.namesContainer}>
-            <TextInput
+        <TextInput
         value={firstName}
         placeholder='First Name' 
         onChangeText={(text) => setFirstName(text)}
@@ -71,7 +122,7 @@ export default function CreateAccount({}) {
         boxStyles={[{backgroundColor: "white"}, {width:250}]}
         dropdownStyles={{backgroundColor: "white"}}
         setSelected={(val) => setSelected(val)}
-        data ={myData}
+        data ={myDataUniverites}
         save='value'
         />
         {/* <FlatList
@@ -126,7 +177,7 @@ const styles = StyleSheet.create({
         borderColor: "#000000",
         height: 50,
         width: 300,
-        marginTop: 10,
+        marginTop: 20,
         marginLeft: 5,
         backgroundColor: "white",
     },
@@ -134,8 +185,13 @@ const styles = StyleSheet.create({
     {
         backgroundColor: "white",
     },
-    flastListTextStyle:
+    profilePicture:
     {
-
+        width: 200,
+        height: 200,
+        borderRadius: 100,
+        borderColor: "black",
+        borderWidth: 5,
+        backgroundColor: "white"
     },
 })

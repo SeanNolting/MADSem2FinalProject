@@ -22,9 +22,14 @@
         "foregroundImage": ".app/assets/social-sphere-high-resolution-logo-white.png",
         "backgroundColor": "#ffffff"
       }
+      
     },
+    "permissions": ["CAMERA", "MEDIA_LIBRARY"],
+    
     "web": {
       "favicon": ".app/assets/social-sphere-high-resolution-logo-white.png"
     }
+    
   }
+  
 }
