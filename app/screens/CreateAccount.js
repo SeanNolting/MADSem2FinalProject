@@ -12,6 +12,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import * as ImagePicker from 'expo-image-picker';
 import placeholderImage from '../assets/emptyPhoto.jpg';
 import { launchImageLibraryAsync } from 'expo-image-picker';
+import { Avatar } from 'react-native-paper';
+import { Modal } from 'react-native';
 
 export default function CreateAccount({}) {
     const navigation = useNavigation();
@@ -47,8 +49,7 @@ export default function CreateAccount({}) {
 
     }
 
-    const [image, setImage] = useState(placeholderImage);
-    console.log(image);
+    
 
     // useEffect(() => {
     //    requestMediaLibraryPermissionsAsync();
@@ -64,35 +65,57 @@ export default function CreateAccount({}) {
     //     }
     // }
 
+    const [modalVisible, setModalVisible] = useState(false);
+   
+
+    const [image, setImage] = useState();
+    console.log(image);
     const pickImage = async () =>
     {
         try{
-            let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4,3],
-            quality: 1,
-        });
-    
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+            let result = await ImagePicker.launchCameraAsync({
+                cameraType: ImagePicker.CameraType.front,
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 1,
+            })
 
-    console.log(image);
-    if (!result.cancelled){
-        setImage(result.uri);
-        console.log(result)
-        //This is where i would upload the url or key to save the image data to the user
-      }    
-    
-    } catch(error)
-        {
-            console.error("Error picking image", error);
+            if(!result.canceled)
+            {
+                await saveImage(result.uri);
+            }
+        } catch (error){
+
+        }
+    };
+
+    const saveImage = async (image) => 
+    {
+        try{
+            setImage(image);
+        } catch (error){
+            throw error;
         }
     };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
         <Text style={styles.text}>Create Account Screen</Text>
-        { image && image.uri && <Image source={{uri: image.uri}} style={{ width: 200, height: 200}} /> }
-        <TouchableOpacity onPress={pickImage}>
+        <Image uri={image} style={styles.profilePicture} />  
+        {/* <Modal
+        animationType="none"
+        transpaerent={true}
+        visible={modalVisible}
+        >
+            <Text>Modal button</Text>
+        <MyButton
+        title={"Modal button"}
+        color="red"
+        onPress={console.log("Modal Button Pressed")}
+        />
+        </Modal> */}
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Entypo name = "pencil" size={20} color="white"/>
         </TouchableOpacity>
         <View style={styles.namesContainer}>
@@ -138,7 +161,7 @@ export default function CreateAccount({}) {
         color={"black"}
         onPress={() => navigation.navigate("Create Bio")}
         />
-    </View>
+    </SafeAreaView>
   )
 }
 
