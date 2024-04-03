@@ -12,8 +12,9 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import * as ImagePicker from 'expo-image-picker';
 import placeholderImage from '../assets/emptyPhoto.jpg';
 import { launchImageLibraryAsync } from 'expo-image-picker';
-import { Avatar } from 'react-native-paper';
+import { Avatar, IconButton } from 'react-native-paper';
 import { Modal } from 'react-native';
+import { Pressable } from 'react-native';
 
 export default function CreateAccount({}) {
     const navigation = useNavigation();
@@ -102,22 +103,36 @@ export default function CreateAccount({}) {
   return (
     <SafeAreaView style={styles.container}>
         <Text style={styles.text}>Create Account Screen</Text>
-        <Image uri={image} style={styles.profilePicture} />  
-        {/* <Modal
+        <Image uri={image} style={styles.profilePicture} /> 
+        <Modal
         animationType="none"
         transpaerent={true}
         visible={modalVisible}
-        >
-            <Text>Modal button</Text>
-        <MyButton
-        title={"Modal button"}
-        color="red"
-        onPress={console.log("Modal Button Pressed")}
-        />
-        </Modal> */}
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        onRequestClose={() => setModalVisible(!modalVisible)}>
+            <SafeAreaView style={styles.centerScreen}>
+                <SafeAreaView style={styles.modalStyle}>
+                    <Text>Camera</Text> 
+                    <IconButton
+                    style={styles.modalButton}
+                    icon="camera"
+                    color="black"
+                    size={45}
+                    onPress={() => setModalVisible(!modalVisible)}
+                    />
+                    <IconButton
+                    style={styles.modalButton}
+                    icon="arrow-left"
+                    color="black"
+                    size={45}
+                    onPress={() => setModalVisible(!modalVisible)}
+                    />
+                </SafeAreaView> 
+            </SafeAreaView>
+        </Modal> 
+        
+        <TouchableHighlight onPress={() => setModalVisible(true)}>
             <Entypo name = "pencil" size={20} color="white"/>
-        </TouchableOpacity>
+        </TouchableHighlight>
         <View style={styles.namesContainer}>
         <TextInput
         value={firstName}
@@ -216,5 +231,39 @@ const styles = StyleSheet.create({
         borderColor: "black",
         borderWidth: 5,
         backgroundColor: "white"
+    },
+    modalStyle:
+    {
+        height: 100,
+        width: 250,
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 65,
+        alignItems: 'center',
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        elevation: 5,
+        flexDirection: "row"
+    },
+    centerScreen:
+    {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 30,
+    },
+    modalButton:
+    {
+        borderRadius: 10,
+        elevation: 2,
+        padding: 15,
+        width: 70,
+        height: 70,
     },
 })
