@@ -2,19 +2,16 @@ import { FlatList, SafeAreaView, StyleSheet, Text, View, TextInput, Image, Touch
 import React, { useEffect } from 'react'
 import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
-// import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getFirestore } from "firebase/firestore";
 import colors from '../config/colors';
 import Entypo from 'react-native-vector-icons/Entypo';
-// import * as ImagePicker from 'expo-image-picker';
 import * as ImagePicker from 'expo-image-picker';
-import placeholderImage from '../assets/emptyPhoto.jpg';
-import { launchImageLibraryAsync } from 'expo-image-picker';
 import { Avatar, IconButton } from 'react-native-paper';
 import { Modal } from 'react-native';
 import { Pressable } from 'react-native';
+import { db } from '../../Firebase/config';
 
 export default function CreateAccount({}) {
     const navigation = useNavigation();
@@ -67,8 +64,6 @@ export default function CreateAccount({}) {
     // }
 
     const [modalVisible, setModalVisible] = useState(false);
-   
-
     const [image, setImage] = useState();
     console.log(image);
     const pickImage = async () =>
@@ -91,6 +86,7 @@ export default function CreateAccount({}) {
         }
     };
 
+    
     const saveImage = async (image) => 
     {
         try{
@@ -99,6 +95,29 @@ export default function CreateAccount({}) {
             throw error;
         }
     };
+    console.log({firstName});
+    console.log({lastName});
+    console.log({major});
+    const addAccountData = async () =>
+    {
+        const docRef = await addDoc(collection(db, "userInfo"),
+        {
+            first: {firstName},
+            last: {lastName},
+            major: {major},
+        }); 
+    }
+
+    const nextScreen = () =>
+    {
+        navigation.navigate("CreateBio");
+    }
+
+    const dataAndNav = async () =>
+    {
+        await addAccountData();
+        nextScreen();
+    }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -129,7 +148,6 @@ export default function CreateAccount({}) {
                 </SafeAreaView> 
             </SafeAreaView>
         </Modal> 
-        
         <TouchableHighlight onPress={() => setModalVisible(true)}>
             <Entypo name = "pencil" size={20} color="white"/>
         </TouchableHighlight>
@@ -174,7 +192,7 @@ export default function CreateAccount({}) {
         <MyButton
         title={"Go to Create Bio"}
         color={"black"}
-        onPress={() => navigation.navigate("Create Bio")}
+        onPress={() => dataAndNav}
         />
     </SafeAreaView>
   )

@@ -5,7 +5,7 @@ import {useNavigation} from "@react-navigation/native";
 import { FIREBASEAPP, auth, db } from '../../Firebase/config';
 // import { TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import colors from '../config/colors';
 import { Icon } from '@rneui/base';
 
@@ -14,6 +14,7 @@ export default function Login({}) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+
     
 
     const signIn = async () =>
