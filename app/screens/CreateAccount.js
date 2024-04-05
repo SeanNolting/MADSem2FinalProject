@@ -11,7 +11,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { Avatar, IconButton } from 'react-native-paper';
 import { Modal } from 'react-native';
 import { Pressable } from 'react-native';
-import { db } from '../../Firebase/config';
+import { FIREBASEAPP, db } from '../../Firebase/config';
+
 
 export default function CreateAccount({}) {
     const navigation = useNavigation();
@@ -95,22 +96,21 @@ export default function CreateAccount({}) {
             throw error;
         }
     };
-    console.log({firstName});
-    console.log({lastName});
-    console.log({major});
+
+    const [userData, setUserData] = useState("");
+    
     const addAccountData = async () =>
     {
         const docRef = await addDoc(collection(db, "userInfo"),
         {
-            first: {firstName},
-            last: {lastName},
-            major: {major},
+            first: "Kuldeep",
+            last: "Debnath",
+            major: "CS",
         }); 
     }
-
-    const nextScreen = () =>
+     const nextScreen = () =>
     {
-        navigation.navigate("CreateBio");
+        navigation.navigate("Create Bio");
     }
 
     const dataAndNav = async () =>
@@ -118,6 +118,32 @@ export default function CreateAccount({}) {
         await addAccountData();
         nextScreen();
     }
+
+    // const saveUserDataToFireStore = (userData) => 
+    // {
+    //     firebase.firestore().collection("userInfo").add(userData).then((docRef) =>
+    //     {
+    //         console.log("Document written with ID: " + docRef.id)
+    //     })
+    //     .catch((error) => {
+    //             console.log("Error adding document", error)
+    //         });
+    // };
+
+
+    // const handleSaveUserData = () => 
+    // {
+    //     const userData ={
+    //         firstName: firstName,
+    //         lastName: lastName,
+    //         major: major,
+    //     };
+    //     // saveUserDataToFireStore(userData);
+    // }
+
+  
+
+   
 
   return (
     <SafeAreaView style={styles.container}>
@@ -192,7 +218,7 @@ export default function CreateAccount({}) {
         <MyButton
         title={"Go to Create Bio"}
         color={"black"}
-        onPress={() => dataAndNav}
+        onPress={() => addAccountData()}
         />
     </SafeAreaView>
   )
