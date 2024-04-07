@@ -67,14 +67,14 @@ export default function Login({}) {
         </TextInput>
         {loading ? <ActivityIndicator size="large" color="#0000ff"/>
         : <>
-        <MyButton title={"Login"} onPress={signIn} color={colors.delftBlue}/>
-        <MyButton title={"Create Account"} onPress={signUp}color={colors.delftBlue}/>
+        <MyButton title={"Login"} onPress={signIn} color={colors.UCLABlue}/>
+        <MyButton title={"Create Account"} onPress={signUp}color={colors.UCLABlue}/>
         </>}
-        <MyButton
+        {/* <MyButton
         title={"Go to create Screen"}
         color={"black"}
         onPress={() => navigation.navigate("Create Account")}
-        />
+        /> */}
     </View>
   )
 }
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     {
         fontSize: 24,
         fontWeight: "bold",
+        
     },
     textInput:
     {
@@ -118,5 +119,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginLeft: 10,
+        color: "white",
     }
 })

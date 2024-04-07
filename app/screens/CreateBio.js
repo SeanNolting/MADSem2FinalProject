@@ -2,11 +2,13 @@ import { StyleSheet, Text, View, TextInput } from 'react-native'
 import React from 'react'
 import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-list';
 import { useState } from 'react';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation} from "@react-navigation/native"; 
 import MyButton from '../components/MyButton';
 import Select from 'react-select';
 // import { TextInput } from 'react-native-gesture-handler';
 import colors from '../config/colors';
+import { collection, addDoc, getFirestore } from "firebase/firestore";
+import { FIREBASEAPP, db } from '../../Firebase/config';
 
  
 export default function CreateBio({}) {
@@ -35,6 +37,36 @@ export default function CreateBio({}) {
     //   {value:'knitting', label:"Knitting"},
     //   {value:'race car rriving', label:"Race Car Driving"},
     // ]
+
+    const addAccountData = async () =>
+    {
+        try{
+            await addDoc(collection(db, "userInfo"),
+        {
+            bio: bio,
+            extraInfo: extraInfo,
+        });
+        console.log("User data has been added");
+        }catch (error){
+            console.error("Error adding user data ", error);
+        }
+        // const docRef = await addDoc(collection(db, "userInfo"),
+        // {
+        //     first: firstName,
+        //     last: lastName,
+        //     major: major,
+        // }); 
+    }
+     const nextScreen = () =>
+    {
+        navigation.navigate("Home");
+    }
+
+    const dataAndNav = async () =>
+    {
+        await addAccountData();
+        nextScreen();
+    }
 
       return (
     <View style={styles.container}>
@@ -78,7 +110,7 @@ export default function CreateBio({}) {
         <MyButton
         title={"Go to Home Screen"}
         color={"black"}
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => dataAndNav()}
         />
     </View>
   )

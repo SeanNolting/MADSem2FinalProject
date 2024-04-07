@@ -3,6 +3,7 @@ import React from 'react'
 import colors from '../config/colors';
 import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-list';
 import { useState } from 'react';
+import MyButton from '../components/MyButton';
 
 export default function EditProfile() {
   const [selected, setSelected ] = React.useState([]);
@@ -90,6 +91,11 @@ export default function EditProfile() {
           numberOfLines={10}
           maxLength={300}
         />
+        <MyButton
+        title={"Edit Profile"}
+        color={colors.UCLABlue}
+        marginTop={20}
+        />
     </View>
   )
 }
@@ -97,7 +103,7 @@ export default function EditProfile() {
 const styles = StyleSheet.create({
   container:
   {
-    backgroundColor: colors.UCLABlue,
+    backgroundColor: colors.delftBlue,
     flex: 1,
   },
   namesContainer:
