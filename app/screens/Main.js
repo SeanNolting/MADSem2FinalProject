@@ -4,10 +4,18 @@ import { IconButton } from 'react-native-paper';
 import colors from '../config/colors';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/database'
 import { FIREBASEAPP, db } from '../../Firebase/config';
 import config from '../../Firebase/config'
 
-
+ const UserDataDisplay = ({ user }) => (
+      <View>
+        <Text>First name: {user.firstName} Last name: {user.lastName}</Text>
+        <Text>Major: {user.major}</Text>
+        <Text></Text>
+      </View>
+    )
+   
 export default function Main() {
   // const DisplayData = () => {
   //   const [data, setData] = useState(null);
@@ -41,6 +49,29 @@ export default function Main() {
   //     fetchData();
     // }, []);
 
+
+      const [userData, setUserData] = useState([]);
+      const [currentUserIndex, setCurrentUserIndex] = useState(0);
+
+      useEffect(() => {
+        const grabUserData = () => {
+          firebase.database().ref('userInfo').once('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+              const userDataArray = Object.values(data);
+              setUserData(userDataArray);
+            }
+          });
+        };
+        grabUserData();
+      }, []);
+    
+      const showNextUser = () => {
+        setCurrentUserIndex((currentUserIndex + 1) % userData.length);
+      };
+    
+    
+
     return (
       <View style={styles.container}>
         <View style={styles.profileContainer}>
@@ -50,17 +81,13 @@ export default function Main() {
             color="black"
             size={45}
           />
-          <IconButton
-            style={styles.viewMore}
-            icon="car"
-            color="black"
-            size={20}
-          />
+          <UserDataDisplay user={userData[currentUserIndex]}/>
           <IconButton
             style={styles.rightArrow}
             icon="arrow-right"
             color="black"
             size={45}
+            onPress={showNextUser}
           />
         </View> 
       </View>
