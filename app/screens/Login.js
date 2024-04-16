@@ -37,6 +37,7 @@ export default function Login({}) {
         setLoading(true);
         try{
             const response = await createUserWithEmailAndPassword(auth, email, password)
+            // const userId = response.user.uid;
             console.log(response);
             alert("Check your emails");
             navigation.navigate("Create Account")

@@ -8,13 +8,6 @@ import 'firebase/database'
 import { FIREBASEAPP, db } from '../../Firebase/config';
 import config from '../../Firebase/config'
 
- const UserDataDisplay = ({ user }) => (
-      <View>
-        <Text>First name: {user.firstName} Last name: {user.lastName}</Text>
-        <Text>Major: {user.major}</Text>
-        <Text></Text>
-      </View>
-    )
    
 export default function Main() {
   // const DisplayData = () => {
@@ -50,27 +43,49 @@ export default function Main() {
     // }, []);
 
 
-      const [userData, setUserData] = useState([]);
-      const [currentUserIndex, setCurrentUserIndex] = useState(0);
+      // const [userData, setUserData] = useState([]);
+      // const [currentUserIndex, setCurrentUserIndex] = useState(0);
 
+      // useEffect(() => {
+      //   const grabUserData = () => {
+      //     firebase.database().ref('userInfo').once('value', (snapshot) => {
+      //       const data = snapshot.val();
+      //       if (data) {
+      //         const userDataArray = Object.values(data);
+      //         setUserData(userDataArray);
+      //       }
+      //     });
+      //   };
+      //   grabUserData();
+      // }, []);
+    
+      // const showNextUser = () => {
+      //   setCurrentUserIndex((currentUserIndex + 1) % userData.length);
+      // };
+    
+
+      const [otherUsers, setOtherUsers] = useState([]);
       useEffect(() => {
-        const grabUserData = () => {
-          firebase.database().ref('userInfo').once('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-              const userDataArray = Object.values(data);
-              setUserData(userDataArray);
-            }
-          });
+        const fetchOtherUsers = async () => {
+          try{
+            const userRef = firebase.firestore().collection('userInfo');
+            const snapshot = await userRef.get();
+            const userList = [];
+            snapshot.forEach(doc => {
+              if(doc.id !== firebase.auth().currentUser.uid){
+                userList.push({ id: doc.id, ...doc.data()});
+              }
+            });
+            setOtherUsers(userList);
+          } catch(error){
+            console.error("Error fetching other users", error);
+          }
         };
-        grabUserData();
+
+        fetchOtherUsers();
       }, []);
     
-      const showNextUser = () => {
-        setCurrentUserIndex((currentUserIndex + 1) % userData.length);
-      };
-    
-    
+
 
     return (
       <View style={styles.container}>
@@ -81,6 +96,13 @@ export default function Main() {
             color="black"
             size={45}
           />
+          {/* {otherUsers.map(user => (
+            <View
+            key={user.id}
+            >
+              
+              <View/>
+          ))} */}
           <UserDataDisplay user={userData[currentUserIndex]}/>
           <IconButton
             style={styles.rightArrow}
