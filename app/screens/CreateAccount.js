@@ -24,18 +24,26 @@ export default function CreateAccount({}) {
         {key: "4", value: "UIUC"}
     ]
     const [userInput, setUserInput] = useState("");
-    const [selected, setSelected ] = useState([]);
-    const [selectedHobbies, setSelectedHobbies ] = useState([]);
     const [major, setMajor]= useState("");
     const [firstName, setFirstName]= useState("");
     const [lastName, setLastName]= useState("");
-    const [selectedOptions, setSelectedOptions]= useState([]);
+    const [selectedUniversity, setSelectedUniversity] = useState("");
+    const [selectedHobbies, setSelectedHobbies] = useState([]);
     const [bio, setBio] = useState("");
     const [extraInfo, setExtraInfo] = useState("");
-    const handleChange = (selected) => {
-      setSelectedOptions(selected)
+
+
+
+    const handleUniversitySelect = (selectedItem) =>{
+        setSelectedUniversity(selectedItem.value)
+        console.log(selectedItem);
     }
-    const myData = [
+
+    const handleHobbiesSelect = (selectedItems) => {
+        setSelectedHobbies(selectedItems.map(item => item.value))
+        console.log(selectedItems);
+    }
+    const myDataHobbies = [
       {key:'1', value:'Running'},
       {key:'2', value:'Reading'},
       {key:'3', value:'Coding'},
@@ -116,25 +124,19 @@ export default function CreateAccount({}) {
     const addAccountData = async () =>
     {
         try{
-            const university = Array.isArray(selected) ? selected.map(item => item.value) : [];
             await addDoc(collection(db, "userInfo"),
         {
             firstName: firstName,
             lastName: lastName,
             major: major,
-            university: university,
+            university: selectedUniversity,
             bio: bio,
+            hobbies: selectedHobbies,
         });
         console.log("User data has been added");
         }catch (error){
             console.error("Error adding user data ", error);
         }
-        // const docRef = await addDoc(collection(db, "userInfo"),
-        // {
-        //     first: firstName,
-        //     last: lastName,
-        //     major: major,
-        // }); 
     }
      const nextScreen = () =>
     {
@@ -227,17 +229,15 @@ export default function CreateAccount({}) {
         <SelectList 
         boxStyles={[{backgroundColor: "white"}, {width:250}]}
         dropdownStyles={{backgroundColor: "white"}}
-        setSelected={setSelected}
-        data ={myDataUniverites}
-        save='value'
+        data={myDataUniverites}
+        onSelect={handleUniversitySelect}
         />
         <Text style={styles.text}>Pick some of your hobbies</Text>
         <MultipleSelectList
-        data={myData}
+        data={myDataHobbies}
         label="Hobbies"
         save='key'
-        setSelected={setSelectedHobbies}
-        onSelect={() => console.log(selectedHobbies)}
+        onSelect={handleHobbiesSelect}
         notFoundText='Search for a hobby'
         boxStyles={[{backgroundColor: "white"}, {width:250}]}
         dropdownStyles={{backgroundColor: "white"}}

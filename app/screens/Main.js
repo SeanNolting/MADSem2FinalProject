@@ -64,26 +64,26 @@ export default function Main() {
       // };
     
 
-      const [otherUsers, setOtherUsers] = useState([]);
-      useEffect(() => {
-        const fetchOtherUsers = async () => {
-          try{
-            const userRef = firebase.firestore().collection('userInfo');
-            const snapshot = await userRef.get();
-            const userList = [];
-            snapshot.forEach(doc => {
-              if(doc.id !== firebase.auth().currentUser.uid){
-                userList.push({ id: doc.id, ...doc.data()});
-              }
-            });
-            setOtherUsers(userList);
-          } catch(error){
-            console.error("Error fetching other users", error);
-          }
-        };
+      // const [otherUsers, setOtherUsers] = useState([]);
+      // useEffect(() => {
+      //   const fetchOtherUsers = async () => {
+      //     try{
+      //       const userRef = firebase.firestore().collection('userInfo');
+      //       const snapshot = await userRef.get();
+      //       const userList = [];
+      //       snapshot.forEach(doc => {
+      //         if(doc.id !== firebase.auth().currentUser.uid){
+      //           userList.push({ id: doc.id, ...doc.data()});
+      //         }
+      //       });
+      //       setOtherUsers(userList);
+      //     } catch(error){
+      //       console.error("Error fetching other users", error);
+      //     }
+      //   };
 
-        fetchOtherUsers();
-      }, []);
+      //   fetchOtherUsers();
+      // }, []);
     
 
 
@@ -103,13 +103,13 @@ export default function Main() {
               
               <View/>
           ))} */}
-          <UserDataDisplay user={userData[currentUserIndex]}/>
+          {/* <UserDataDisplay user={userData[currentUserIndex]}/> */}
           <IconButton
             style={styles.rightArrow}
             icon="arrow-right"
             color="black"
             size={45}
-            onPress={showNextUser}
+            // onPress={showNextUser}
           />
         </View> 
       </View>
