@@ -13,15 +13,11 @@ import { FIREBASEAPP, db } from '../../Firebase/config';
  
 export default function CreateBio({}) {
     const navigation = useNavigation();
-    const [selected, setSelected ] = React.useState([]);
-    const [selectedOptions, setSelectedOptions]= useState([]);
+   
     const [bio, setBio] = useState("");
     const [extraInfo, setExtraInfo] = useState("");
-    const handleChange = (selected) => {
-      setSelectedOptions(selected)
-    }
-
-    const myData = [
+   
+    const myDataHobbies = [
         {key:'1', value:'Running'},
         {key:'2', value:'Reading'},
         {key:'3', value:'Coding'},
@@ -70,18 +66,13 @@ export default function CreateBio({}) {
 
       return (
     <View style={styles.container}>
-        {/* <SelectList
-        setSelected={(val) => setSelected(val)}
-        data ={Mydata}
-        save='value'
-        /> */}
+
         <Text style={styles.headerTextStyle}>Select some hobbies</Text>
         <MultipleSelectList
-        setSelected={(val) => setSelected(val)}
-        data={myData}
+        data={myDataHobbies}
         label="Hobbies"
         save='key'
-        onSelect={() => console.log(selected)}
+        onSelect={() => console.log("hello")}
         notFoundText='Search for a hobby'
         boxStyles={[{backgroundColor: "white"}, {width:250}]}
         dropdownStyles={{backgroundColor: "white"}}

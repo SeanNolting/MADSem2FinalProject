@@ -35,7 +35,7 @@ export default function Home() {
           <Drawer.Screen name = "Edit Profile" component={EditProfile}/>
           <Drawer.Screen name = "Friends" component={Friends} />
           <Drawer.Screen name = "Groups" component={Groups}/>
-            <Drawer.Screen name = "Favorites" component={Favorites}/>
+          <Drawer.Screen name = "Favorites" component={Favorites}/>
           <Drawer.Screen name = "View More" component={ViewMore}/>
       </Drawer.Navigator> 
     </GestureHandlerRootView>

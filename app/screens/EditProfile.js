@@ -6,14 +6,22 @@ import { useState } from 'react';
 import MyButton from '../components/MyButton';
 
 export default function EditProfile() {
-  const [selected, setSelected ] = React.useState([]);
-  const [selectedOptions, setSelectedOptions]= useState([]);
+ 
+  const [selectedUnviersty, setSelectedUniversity] = useState("");
+  const [selectedHobbies, setSelectedHobbies] = useState([]);
   const [bio, setBio] = useState("");
   const [extraInfo, setExtraInfo] = useState("");
-  const handleChange = (selected) => {
-    setSelectedOptions(selected)
-  }
-  const myData = [
+
+   const handleUniversitySelect = (selectedItem) =>{
+        setSelectedUniversity(selectedItem.value)
+        console.log(selectedItem);
+    }
+
+    const handleHobbiesSelect = (selectedItems) => {
+        setSelectedHobbies(selectedItems.map(item => item.value))
+        console.log(selectedItems);
+    }
+  const myDataHobbies = [
     {key:'1', value:'Running'},
     {key:'2', value:'Reading'},
     {key:'3', value:'Coding'},
@@ -57,16 +65,15 @@ export default function EditProfile() {
         <SelectList 
         boxStyles={styles.flatlistStyle}
         dropdownStyles={{backgroundColor: "white"}}
-        setSelected={(val) => setSelected(val)}
+        onSelect={handleUniversitySelect}
         data ={myDataUniverites}
         save='value'
         />
         <MultipleSelectList
-        setSelected={(val) => setSelected(val)}
-        data={myData}
+        data={myDataHobbies}
         label="Hobbies"
         save='key'
-        onSelect={() => console.log(selected)}
+        onSelect={handleHobbiesSelect}
         notFoundText='Search for a hobby'
         boxStyles={styles.flatlistStyle}
         dropdownStyles={{backgroundColor: "white"}}

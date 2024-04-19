@@ -23,25 +23,32 @@ export default function CreateAccount({}) {
         {key: "3", value: "Wisconsin"},
         {key: "4", value: "UIUC"}
     ]
-    const [userInput, setUserInput] = useState("");
     const [major, setMajor]= useState("");
     const [firstName, setFirstName]= useState("");
     const [lastName, setLastName]= useState("");
-    const [selectedUniversity, setSelectedUniversity] = useState("");
+    const [selectedUniversity, setSelectedUniversity] = useState([]);
     const [selectedHobbies, setSelectedHobbies] = useState([]);
     const [bio, setBio] = useState("");
-    const [extraInfo, setExtraInfo] = useState("");
 
 
-
-    const handleUniversitySelect = (selectedItem) =>{
-        setSelectedUniversity(selectedItem.value)
-        console.log(selectedItem);
+    const handleUniversitySelect = (selected) =>{
+        console.log(selected);
+        setSelectedUniversity(selected)
+        
     }
 
     const handleHobbiesSelect = (selectedItems) => {
-        setSelectedHobbies(selectedItems.map(item => item.value))
         console.log(selectedItems);
+        if(typeof selectedItems === 'function'){
+            console.error("selected items is not a function", selectedItems)
+            return;
+        }
+        if(Array.isArray(selectedItems)){
+            setSelectedHobbies(selectedItems.map(item => item.value));
+        } else{
+            console.error("Selected items is not an array", selectedItems)
+        }
+        
     }
     const myDataHobbies = [
       {key:'1', value:'Running'},
@@ -230,14 +237,16 @@ export default function CreateAccount({}) {
         boxStyles={[{backgroundColor: "white"}, {width:250}]}
         dropdownStyles={{backgroundColor: "white"}}
         data={myDataUniverites}
-        onSelect={handleUniversitySelect}
+        setSelected={handleUniversitySelect}
+        save='value'
         />
         <Text style={styles.text}>Pick some of your hobbies</Text>
         <MultipleSelectList
         data={myDataHobbies}
         label="Hobbies"
-        save='key'
-        onSelect={handleHobbiesSelect}
+        save='value'
+        setSelected={handleHobbiesSelect}
+        onSelect={(selectedItems) => handleHobbiesSelect(selectedItems)}
         notFoundText='Search for a hobby'
         boxStyles={[{backgroundColor: "white"}, {width:250}]}
         dropdownStyles={{backgroundColor: "white"}}

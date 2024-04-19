@@ -41,7 +41,7 @@ export default function App() {
     <Stack.Navigator initialRouteName='Login' >
       <Stack.Screen name = "Login" component={Login}/>
       <Stack.Screen name = "Create Account" component={CreateAccount}/>
-      <Stack.Screen name = "Create Bio" component={CreateBio}/>
+      {/* <Stack.Screen name = "Create Bio" component={CreateBio}/> */}
       <Stack.Screen name = "Home" component={MyDrawer}/>
       {/* <Stack.Screen name = "Home" component={Home}/> */}
     </Stack.Navigator> 
