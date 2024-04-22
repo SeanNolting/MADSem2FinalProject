@@ -13,7 +13,8 @@ import { Modal } from 'react-native';
 import { Pressable } from 'react-native';
 import { FIREBASEAPP, db } from '../../Firebase/config';
 import { MultipleSelectList } from 'react-native-dropdown-select-list';
-
+import 'firebase/firestore';
+import 'firebase/database'
 
 export default function CreateAccount({}) {
     const navigation = useNavigation();
@@ -30,26 +31,29 @@ export default function CreateAccount({}) {
     const [selectedHobbies, setSelectedHobbies] = useState([]);
     const [bio, setBio] = useState("");
 
+    const [selected, setSelected] = React.useState([]);
+
 
     const handleUniversitySelect = (selected) =>{
         console.log(selected);
         setSelectedUniversity(selected)
-        
     }
-
     const handleHobbiesSelect = (selectedItems) => {
         console.log(selectedItems);
-        if(typeof selectedItems === 'function'){
-            console.error("selected items is not a function", selectedItems)
-            return;
-        }
-        if(Array.isArray(selectedItems)){
-            setSelectedHobbies(selectedItems.map(item => item.value));
-        } else{
-            console.error("Selected items is not an array", selectedItems)
-        }
-        
+        setSelectedHobbies(selectedItems)
     }
+    // const handleHobbiesSelect = (selectedItems) => {
+    //     console.log(selectedItems);
+    //     if(typeof selectedItems === 'function'){
+    //         console.error("selected items is not a function", selectedItems)
+    //         return;
+    //     }
+    //     if(Array.isArray(selectedItems)){
+    //         setSelectedHobbies(selectedItems.map(item => item.value));
+    //     } else{
+    //         console.error("Selected items is not an array", selectedItems)
+    //     }
+    // }
     const myDataHobbies = [
       {key:'1', value:'Running'},
       {key:'2', value:'Reading'},
@@ -242,11 +246,11 @@ export default function CreateAccount({}) {
         />
         <Text style={styles.text}>Pick some of your hobbies</Text>
         <MultipleSelectList
+        setSelected={handleHobbiesSelect}
+        onSelect={() => console.log(selected)}
         data={myDataHobbies}
         label="Hobbies"
         save='value'
-        setSelected={handleHobbiesSelect}
-        onSelect={(selectedItems) => handleHobbiesSelect(selectedItems)}
         notFoundText='Search for a hobby'
         boxStyles={[{backgroundColor: "white"}, {width:250}]}
         dropdownStyles={{backgroundColor: "white"}}
@@ -276,6 +280,7 @@ export default function CreateAccount({}) {
         color={colors.UCLABlue}
         onPress={() => dataAndNav()}
         />
+
     </SafeAreaView> 
   )
 }
