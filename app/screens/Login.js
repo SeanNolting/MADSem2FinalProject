@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, Text, View, Image, TextInput } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View, Image, TextInput, ScrollView } from 'react-native'
 import React from 'react'
 import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
@@ -39,7 +39,7 @@ export default function Login({}) {
             const response = await createUserWithEmailAndPassword(auth, email, password)
             // const userId = response.user.uid;
             console.log(response);
-            alert("Check your emails");
+            alert("Welcome to Social Sphere");
             navigation.navigate("Create Account")
         }catch (error){
             console.log(error);
@@ -49,7 +49,9 @@ export default function Login({}) {
         }
     }
   return (
-    <View style={styles.container}>
+   
+    <View style={styles.container}> 
+    <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.headerStyle}>Social Sphere</Text>
         <Image style={styles.image} 
         source={require('../../images/social-sphere-high-resolution-logo-white.png')}/>
@@ -68,15 +70,29 @@ export default function Login({}) {
         </TextInput>
         {loading ? <ActivityIndicator size="large" color="#0000ff"/>
         : <>
-        <MyButton title={"Login"} onPress={signIn} color={colors.UCLABlue}/>
-        <MyButton title={"Create Account"} onPress={signUp}color={colors.UCLABlue}/>
+        <MyButton title={"Login"} 
+        onPress={signIn} 
+        color={colors.UCLABlue}
+        width={100}
+        height={50}
+        borderRadius={25}
+        />
+        <MyButton title={"Create Account"} 
+        onPress={signUp}
+        color={colors.UCLABlue}
+        width={150}
+        height={50}
+        borderRadius={25}
+        />
         </>}
         {/* <MyButton
         title={"Go to create Screen"}
         color={"black"}
         onPress={() => navigation.navigate("Create Account")}
         /> */}
+        </ScrollView>
     </View>
+    
   )
 }
 
@@ -87,19 +103,18 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "flex-start",
-        backgroundColor: colors.delftBlue,
+        backgroundColor: "black",
     },
     text:
     {
         fontSize: 24,
         fontWeight: "bold",
-        
     },
     textInput:
     {
         backgroundColor: "white",
-        borderColor:"black",
-        borderWidth: 2,
+        borderColor: colors.UCLABlue,
+        borderWidth: 3,
         width: 350,
         height: 50,
         padding: 2,

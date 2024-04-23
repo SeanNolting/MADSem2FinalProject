@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View, TouchableHighlight} from 'react-native'
 import React from 'react'
 
-export default function MyButton({title, onPress, color}) {
+export default function MyButton({title, onPress, color, width, height, borderRadius}) {
   return (
     <TouchableHighlight 
-    style={[styles.button, {backgroundColor: color}]}
+    style={[styles.button, {backgroundColor: color}, {height: height}, {width: width}, {borderRadius: borderRadius}
+    
+    ]}
     onPress={onPress}>
         <Text style={styles.text}> {title} </Text>
     </TouchableHighlight>
@@ -14,10 +16,9 @@ export default function MyButton({title, onPress, color}) {
 const styles = StyleSheet.create({
     button:
     {
-      backgroundColor: "Black",
-      borderRadius: 25,
       justifyContent: 'center',
       alignItems: 'center', 
+      marginTop: 10
     },
     text: 
     {
