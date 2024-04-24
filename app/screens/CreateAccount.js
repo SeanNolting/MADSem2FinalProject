@@ -1,4 +1,4 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View, TextInput, Image, TouchableHighlight, TouchableOpacity, Platform, ScrollView, KeyboardAvoidingView } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, Text, View, TextInput, Image, TouchableHighlight, TouchableOpacity, Platform, ScrollView, KeyboardAvoidingView, useWindowDimensions } from 'react-native'
 import React, { useEffect } from 'react'
 import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
@@ -15,6 +15,7 @@ import { FIREBASEAPP, db } from '../../Firebase/config';
 import { MultipleSelectList } from 'react-native-dropdown-select-list';
 import 'firebase/firestore';
 import 'firebase/database'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 export default function CreateAccount({}) {
     const navigation = useNavigation();
@@ -182,123 +183,110 @@ export default function CreateAccount({}) {
     //     // saveUserDataToFireStore(userData);
     // }
 
+    const deviceHeight = useWindowDimensions()
   
   return (
-  <KeyboardAvoidingView
-        behavior="padding"
-        style={styles.keyboardStyle}>
-            <ScrollView style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding': 'height'}> 
+       <KeyboardAwareScrollView contentContainerStyle={styles.container} extraScrollHeight={100} keyboardShouldPersistTaps="handled">
+                 <Text style={styles.text}>Create your profile</Text>
+                 <Image uri={image} style={styles.profilePicture} /> 
+                    <Modal
+                    animationType="none"
+                    transpaerent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(!modalVisible)}>
+                        <SafeAreaView style={styles.centerScreen}>
+                            <SafeAreaView style={styles.modalStyle}>
+                                <Text>Camera</Text> 
+                                <IconButton
+                                style={styles.modalButton}
+                                icon="camera"
+                                color="black"
+                                size={45}
+                                onPress={() => setModalVisible(!modalVisible)}
+                                />
+                                <IconButton
+                                style={styles.modalButton}
+                                icon="arrow-left"
+                                color="black"
+                                size={45}
+                                onPress={() => setModalVisible(!modalVisible)}
+                                />
+                            </SafeAreaView> 
+                        </SafeAreaView>
+                    </Modal> 
+                    <TouchableHighlight onPress={() => setModalVisible(true)}>
+                    <Entypo name = "pencil" size={20} color="white"/>
+                    </TouchableHighlight>
 
-            
-        {/* <SafeAreaView style={styles.container}> */}
-            <Text style={styles.text}>Create your profile</Text>
-            <Image uri={image} style={styles.profilePicture} /> 
-            <Modal
-            animationType="none"
-            transpaerent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(!modalVisible)}>
-                <SafeAreaView style={styles.centerScreen}>
-                    <SafeAreaView style={styles.modalStyle}>
-                        <Text>Camera</Text> 
-                        <IconButton
-                        style={styles.modalButton}
-                        icon="camera"
-                        color="black"
-                        size={45}
-                        onPress={() => setModalVisible(!modalVisible)}
+                    <Text style={styles.text}>Enter your name</Text>
+                    <View style={styles.namesContainer}>
+                    <TextInput
+                        value={firstName}
+                        placeholder='First Name' 
+                        onChangeText={(text) => setFirstName(text)}
+                        style={styles.nameInputStyle}
                         />
-                        <IconButton
-                        style={styles.modalButton}
-                        icon="arrow-left"
-                        color="black"
-                        size={45}
-                        onPress={() => setModalVisible(!modalVisible)}
+                    <TextInput
+                        value={lastName}
+                        placeholder='Last Name' 
+                        onChangeText={(text) => setLastName(text)}
+                        style={styles.nameInputStyle}
                         />
-                    </SafeAreaView> 
-                </SafeAreaView>
-            </Modal> 
-            <TouchableHighlight onPress={() => setModalVisible(true)}>
-                <Entypo name = "pencil" size={20} color="white"/>
-            </TouchableHighlight>
-
-            <Text style={styles.text}>Enter your name</Text>
-            <View style={styles.namesContainer}>
-                <TextInput
-                value={firstName}
-                placeholder='First Name' 
-                onChangeText={(text) => setFirstName(text)}
-                style={styles.nameInputStyle}
-                />
-                <TextInput
-                value={lastName}
-                placeholder='Last Name' 
-                onChangeText={(text) => setLastName(text)}
-                style={styles.nameInputStyle}
-                />
-            </View>
-            <Text style={styles.text}>What are you majoring in</Text>
-            <TextInput
-            value={major}
-            placeholder='Major' 
-            onChangeText={(text) => setMajor(text)}
-            style={styles.majorInputStyle}
-            />
-            <Text style={styles.text}>Seach for your university</Text>
-            <SelectList 
-            boxStyles={[{backgroundColor: "white"}, {width:250}]}
-            dropdownStyles={{backgroundColor: "white"}}
-            data={myDataUniverites}
-            setSelected={handleUniversitySelect}
-            save='value'
-            />
-            <Text style={styles.text}>Pick some of your hobbies</Text>
-            <MultipleSelectList
-            setSelected={handleHobbiesSelect}
-            onSelect={() => console.log(selected)}
-            data={myDataHobbies}
-            label="Hobbies"
-            save='value'
-            notFoundText='Search for a hobby'
-            boxStyles={[{backgroundColor: "white"}, {width:250}]}
-            dropdownStyles={{backgroundColor: "white"}}
-            />
-            <Text style={styles.text}>Tell us about yourself</Text>
-            <TextInput
-            style={styles.textInputStyle}
-            value={bio}
-            placeholder='Biography' 
-            placeholderTextColor="#000000"
-            onChangeText={(text) => setBio(text)}
-            />
-            {/* <TextInput
-            multiline
-            style={styles.textInputStyle}
-            value={extraInfo}
-            placeholder='Extra info' 
-            placeholderTextColor="#000000"
-            onChangeText={(text) => setExtraInfo(text)}
-            /> */}
-            {/* <MyButton
-            title={"Go to login"}
-            color={"black"}
-            onPress={() => navigation.navigate("Login")}
-            /> */}
-            <MyButton
-            title={"Create Account"}
-            color={colors.UCLABlue}
-            onPress={() => dataAndNav()}
-            /> 
-        {/* </SafeAreaView>  */}
-        </ScrollView>
-    </KeyboardAvoidingView>
+                    </View>
+                    <Text style={styles.text}>What are you majoring in</Text>
+                    <TextInput
+                    value={major}
+                    placeholder='Major' 
+                    onChangeText={(text) => setMajor(text)}
+                    style={styles.majorInputStyle}
+                    />
+                    <Text style={styles.text}>Seach for your university</Text>
+                    <SelectList 
+                    boxStyles={[{backgroundColor: "white"}, {width:250}]}
+                    dropdownStyles={{backgroundColor: "white"}}
+                    data={myDataUniverites}
+                    setSelected={handleUniversitySelect}
+                    save='value'
+                    />
+                    <Text style={styles.text}>Pick some of your hobbies</Text>
+                    <MultipleSelectList
+                    setSelected={handleHobbiesSelect}
+                    onSelect={() => console.log(selected)}
+                    data={myDataHobbies}
+                    label="Hobbies"
+                    save='value'
+                    notFoundText='Search for a hobby'
+                    boxStyles={[{backgroundColor: "white"}, {width:250}]}
+                    dropdownStyles={{backgroundColor: "white"}}
+                    />
+                    <Text style={styles.text}>Tell us about yourself</Text>
+                    <TextInput
+                    style={styles.textInputStyle}
+                    value={bio}
+                    placeholder='Biography' 
+                    placeholderTextColor="#000000"
+                    onChangeText={(text) => setBio(text)}
+                    />
+                    {/* <MyButton
+                    title={"Go to login"}
+                    color={"black"}
+                    onPress={() => navigation.navigate("Login")}
+                    /> */}
+                    <MyButton
+                    title={"Create Account"}
+                    color={colors.UCLABlue}
+                    onPress={() => dataAndNav()}
+                    />  
+        </KeyboardAwareScrollView> 
+    </KeyboardAvoidingView> 
   )
 }
 
 const styles = StyleSheet.create({
 
-    keyboardStyle:{
-        flex:1
+    ScrollView:{
+        flex: 1,
     },
     container:
     {
