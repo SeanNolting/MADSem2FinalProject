@@ -5,7 +5,6 @@ export default function MyButton({title, onPress, color, width, height, borderRa
   return (
     <TouchableHighlight 
     style={[styles.button, {backgroundColor: color}, {height: height}, {width: width}, {borderRadius: borderRadius}
-    
     ]}
     onPress={onPress}>
         <Text style={styles.text}> {title} </Text>

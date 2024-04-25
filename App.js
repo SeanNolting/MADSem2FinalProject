@@ -13,6 +13,9 @@ import Friends from './app/screens/Friends';
 import Groups from './app/screens/Groups';
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import CustomDrawer from './app/components/CustomDrawer'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+
 
 
 const Stack = createStackNavigator();
@@ -22,15 +25,23 @@ function MyDrawer()
 {
   return(
     <Drawer.Navigator
+    drawerContent={props => <CustomDrawer {...props}/>}
     initialRouteName='Main'
     backBehavior='initialRoute'
     screenOptions={{headerShown: false}}>
-       <Drawer.Screen name = "Home" 
-       component={Main} 
-       />
-       <Drawer.Screen name = "Edit Profile" component= {EditProfile}/>
-       <Drawer.Screen name = "Friends" component={Friends} />
-       <Drawer.Screen name = "Groups" component={Groups}/>
+       <Drawer.Screen name = "Home" component={Main} options={{drawerIcon: () => (
+        <Ionicons name = "home" size={20} color={"#000000"}/>
+       )
+      }}/>
+       <Drawer.Screen name = "Edit Profile" component= {EditProfile} options={{drawerIcon: () => (
+        <Ionicons name = "pencil" size={20} color={"#000000"}/>
+       )
+      }}/>
+       <Drawer.Screen name = "Friends" component={Friends} options={{drawerIcon: () => (
+        <Ionicons name = "person-add" size={20} color={"#000000"}/>
+       )
+      }}/>
+       {/* <Drawer.Screen name = "Groups" component={Groups}/> */}
    </Drawer.Navigator> 
   );
 }

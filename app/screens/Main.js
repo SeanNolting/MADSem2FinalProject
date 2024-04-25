@@ -7,6 +7,7 @@ import 'firebase/firestore';
 import 'firebase/database'
 import { FIREBASEAPP, db } from '../../Firebase/config';
 import config from '../../Firebase/config'
+import MyButton from '../components/MyButton';
 
    
 export default function Main() {
@@ -111,7 +112,14 @@ export default function Main() {
             size={45}
             // onPress={showNextUser}
           />
+          
         </View> 
+          <Text>Name: </Text>
+          <Text>Major:</Text>
+          <Text>Biography: </Text>
+          <MyButton color={colors.delftBlue}
+            title={"View more"}
+          />
       </View>
     );
   };
