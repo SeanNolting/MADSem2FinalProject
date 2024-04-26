@@ -23,7 +23,12 @@ export default function CreateAccount({}) {
         {key: '1', value: "Iowa State"},
         {key: "2", value: "MIT"},
         {key: "3", value: "Wisconsin"},
-        {key: "4", value: "UIUC"}
+        {key: "4", value: "UIUC"},
+        {key: "5", value: "Butler"},
+        {key: "6", value: "Denison"},
+        {key: "7", value: "Minnisota"},
+        {key: "8", value: "Purdue"},
+        {key: "9", value: "Indiana"},
     ]
     const [major, setMajor]= useState("");
     const [firstName, setFirstName]= useState("");
@@ -62,6 +67,10 @@ export default function CreateAccount({}) {
       {key:'4', value:'Baseketball'},
       {key:'5', value:'Knitting'},
       {key:'6', value:'Race Car Driving'},
+      {key:'7', value:'Baking'},
+      {key:'8', value:'Slime making'},
+      {key:'9', value:'Soccer'},
+      {key:'10', value:'Volleyball'},
   ]
     // const filterData = (item) =>
     // {
