@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import colors from '../config/colors';
 import firebase from 'firebase/app';
-import {doc, getDoc} from 'firebase/firestore';
+import {collection, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 import 'firebase/database'
 import { FIREBASEAPP, db } from '../../Firebase/config';
 import config from '../../Firebase/config'
@@ -11,25 +11,46 @@ import MyButton from '../components/MyButton';
 
    
 export default function Main() {
-
-    const [userData, setUserData] = useState(null);
+    const [currentUserData, setCurrentUserData] = useState(null);
+    const [randomUserData, setRandomUserData] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const docRef = doc(db, "userInfo", "Bske2zvRYPMICKUhBNNA");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setUserData(docSnap.data());
-        } else {
-          console.log("No such document!");
+
+    const fetchCurrentUserData = async () => 
+    {
+      try{
+        const currentUserDocRef = doc(db, "userInfo", "P84UesqnYcwpZNtGYN4x") //replace with a variable that gets the current userID
+        const currentUserDocSnap = await getDoc(currentUserDocRef);
+        if(currentUserDocSnap.exists()){
+          setCurrentUserData(currentUserDocSnap.data());
+        } else{
+          console.log("Current user has no Docs")
         }
+      } catch(error) {
+        console.error("Error getting current user docs", error)
+      }
+    }
+
+    const fetchRandomUserData = async () => {
+      try {
+        const userCollectionRef = collection(db,"userInfo");
+        const university = currentUserData ? currentUserData.university: "";
+        const universityQuery = query(userCollectionRef, where("univeristy", "==", university))
+        const userQuerySnapshot = await getDocs(universityQuery);
+        const userDocs = [];
+        userQuerySnapshot.forEach((doc) => {
+          userDocs.push(doc.data());
+        });
+        const filteredUsers = userDocs.filter(user => user.id !== "P84UesqnYcwpZNtGYN4x")
+        const randomDocId = filteredUsers[Math.floor(Math.random() * filteredUsers.length)]
+        setRandomUserData(randomDocId);
       } catch (error) {
         console.error("Error fetching document: ", error);
       }
     };
-    fetchUserData();
-  }, []);
+    fetchCurrentUserData();
+    fetchRandomUserData();
+  }, [currentUserData]);
 
     return (
       <View style={styles.container}>
@@ -49,10 +70,10 @@ export default function Main() {
           />
           
         </View> 
-          <Text>Name: {userData ? `${userData.firstName} ${userData.lastName}` : ""} </Text>
-          <Text>Major:  {userData ? userData.major : ""}</Text>
-          <Text>Biography:  {userData ? userData.bio : ""} </Text>
-          <Text>Hobbies:  {userData ? userData.hobbies + "" : ""} </Text>
+          <Text>Name: {randomUserData ? `${randomUserData.firstName} ${randomUserData.lastName}` : ""} </Text>
+          <Text>Major: {randomUserData ? randomUserData.major : ""}</Text>
+          <Text>Biography: {randomUserData ? randomUserData.bio : ""} </Text>
+          <Text>Hobbies: {randomUserData ? randomUserData.hobbies + "" : ""} </Text>
           <MyButton color={colors.delftBlue}
             title={"View more"}
           />
