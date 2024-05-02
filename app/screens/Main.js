@@ -6,6 +6,7 @@ import firebase from 'firebase/app';
 import {collection, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 import 'firebase/database'
 import { FIREBASEAPP, db } from '../../Firebase/config';
+import { getAuth } from 'firebase/auth';
 import config from '../../Firebase/config'
 import MyButton from '../components/MyButton';
 
@@ -16,15 +17,29 @@ export default function Main() {
 
   useEffect(() => {
 
+    const auth=getAuth();
     const fetchCurrentUserData = async () => 
     {
       try{
-        const currentUserDocRef = doc(db, "userInfo", "P84UesqnYcwpZNtGYN4x") //replace with a variable that gets the current userID
-        const currentUserDocSnap = await getDoc(currentUserDocRef);
+        const currentUser = auth.currentUser;
+        console.log("Current user:", currentUser)
+        if(currentUser)
+        {
+          const currentUserDocRef = doc(db, "userInfo", currentUser.uid)
+          console.log("Current user DOCREF", currentUserDocRef)
+          console.log("Current user DOCID", currentUser.uid)
+          const currentUserDocSnap = await getDoc(currentUserDocRef);
+          const userDocID = currentUserDocSnap.id;
+          console.log("Current user DOCREF", currentUserDocSnap)
         if(currentUserDocSnap.exists()){
           setCurrentUserData(currentUserDocSnap.data());
-        } else{
+        } 
+        
+        else{
           console.log("Current user has no Docs")
+        }
+        } else {
+          console.log("N0 current usr found")
         }
       } catch(error) {
         console.error("Error getting current user docs", error)
@@ -33,17 +48,19 @@ export default function Main() {
 
     const fetchRandomUserData = async () => {
       try {
-        const userCollectionRef = collection(db,"userInfo");
-        const university = currentUserData ? currentUserData.university: "";
-        const universityQuery = query(userCollectionRef, where("univeristy", "==", university))
-        const userQuerySnapshot = await getDocs(universityQuery);
-        const userDocs = [];
-        userQuerySnapshot.forEach((doc) => {
+        if(currentUserData){
+          const userCollectionRef = collection(db,"userInfo");
+          const university =  currentUserData.university;
+          const universityQuery = query(userCollectionRef, where("univeristy", "==", university))
+          const userQuerySnapshot = await getDocs(universityQuery);
+          const userDocs = [];
+          userQuerySnapshot.forEach((doc) => {
           userDocs.push(doc.data());
-        });
-        const filteredUsers = userDocs.filter(user => user.id !== "P84UesqnYcwpZNtGYN4x")
+        }); 
+        const filteredUsers = userDocs.filter(user => user.id !== currentUser.uid)
         const randomDocId = filteredUsers[Math.floor(Math.random() * filteredUsers.length)]
         setRandomUserData(randomDocId);
+        }
       } catch (error) {
         console.error("Error fetching document: ", error);
       }

@@ -18,6 +18,8 @@ import 'firebase/database'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 export default function CreateAccount({}) {
+
+    //Figure out a way to store the current users DocID then we chilling maybe 
     const navigation = useNavigation();
     const myDataUniverites = [
         {key: '1', value: "Iowa State"},
@@ -153,6 +155,7 @@ export default function CreateAccount({}) {
             university: selectedUniversity,
             bio: bio,
             hobbies: selectedHobbies,
+            docID: userDocID,
         });
         console.log("User data has been added");
         }catch (error){
