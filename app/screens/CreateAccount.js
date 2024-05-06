@@ -4,16 +4,16 @@ import MyButton from '../components/MyButton'
 import {useNavigation} from "@react-navigation/native";
 import { useState } from 'react';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { collection, addDoc, getFirestore } from "firebase/firestore";
+import { collection, addDoc, getFirestore, setDoc } from "firebase/firestore";
 import colors from '../config/colors';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as ImagePicker from 'expo-image-picker';
 import { Avatar, IconButton } from 'react-native-paper';
 import { Modal } from 'react-native';
 import { Pressable } from 'react-native';
-import { FIREBASEAPP, db } from '../../Firebase/config';
+import { FIREBASEAPP, auth, db } from '../../Firebase/config';
 import { MultipleSelectList } from 'react-native-dropdown-select-list';
-import 'firebase/firestore';
+
 import 'firebase/database'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
@@ -38,6 +38,7 @@ export default function CreateAccount({}) {
     const [selectedUniversity, setSelectedUniversity] = useState([]);
     const [selectedHobbies, setSelectedHobbies] = useState([]);
     const [bio, setBio] = useState("");
+    const [userId, setUserId]= useState("");
 
     const [selected, setSelected] = React.useState([]);
 
@@ -144,21 +145,25 @@ export default function CreateAccount({}) {
     };
     const [userData, setUserData] = useState("");
     
-    const addAccountData = async () =>
-    {
-        try{
-            await addDoc(collection(db, "userInfo"),
-        {
-            firstName: firstName,
-            lastName: lastName,
-            major: major,
-            university: selectedUniversity,
-            bio: bio,
-            hobbies: selectedHobbies,
-            docID: userDocID,
-        });
-        console.log("User data has been added");
-        }catch (error){
+    const addAccountData = async () => {
+        try {
+            const currentUser = auth.currentUser;
+            if (currentUser) 
+            { 
+                await addDoc(collection(db, "userInfo"), {
+                    firstName: firstName,
+                    lastName: lastName,
+                    major: major,
+                    university: selectedUniversity,
+                    bio: bio,
+                    hobbies: selectedHobbies,
+                    userId: currentUser.uid, 
+                });
+                console.log("User data has been added");
+            } else {
+                console.error("No current user found");
+            }
+        } catch (error) {
             console.error("Error adding user data ", error);
         }
     }

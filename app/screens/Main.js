@@ -5,7 +5,7 @@ import colors from '../config/colors';
 import firebase from 'firebase/app';
 import {collection, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 import 'firebase/database'
-import { FIREBASEAPP, db } from '../../Firebase/config';
+import { FIREBASEAPP, db, auth } from '../../Firebase/config';
 import { getAuth } from 'firebase/auth';
 import config from '../../Firebase/config'
 import MyButton from '../components/MyButton';
@@ -13,61 +13,116 @@ import MyButton from '../components/MyButton';
    
 export default function Main() {
     const [currentUserData, setCurrentUserData] = useState(null);
-    const [randomUserData, setRandomUserData] = useState(null);
+    const [usersWithSameUniversity, setUsersWithSameUniversity] = useState([]);
+    const [currentUserDocId, setCurrentUserDocId] = useState(null);
+    const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
+    useEffect(() => {
+      setIsMounted(true);
+      const fetchUserData = async () => {
+        try {
+            await fetchCurrentUserData();
+            fetchUsersWithSameUniversity();
+        } catch (error) {
+            console.log("Error fetching userData", error)
+        }
+    };
+      const fetchCurrentUserData = async () => {
+        try {
+          const currentUser = auth.currentUser;
+          if (currentUser) {
+            const userCollectionRef = collection(db,"userInfo");
+            const querySnapshot = await getDocs(query(userCollectionRef, where("userId", "==", currentUser.uid)))
+            if(!querySnapshot.empty){
+              const currentUserDoc = querySnapshot.docs[0];
+              const currentUserDocId = currentUserDoc.id;
+              console.log("Current User doc Id: ", currentUserDocId);
 
-    const auth=getAuth();
-    const fetchCurrentUserData = async () => 
-    {
-      try{
-        const currentUser = auth.currentUser;
-        console.log("Current user:", currentUser)
-        if(currentUser)
-        {
-          const currentUserDocRef = doc(db, "userInfo", currentUser.uid)
-          console.log("Current user DOCREF", currentUserDocRef)
-          console.log("Current user DOCID", currentUser.uid)
-          const currentUserDocSnap = await getDoc(currentUserDocRef);
-          const userDocID = currentUserDocSnap.id;
-          console.log("Current user DOCREF", currentUserDocSnap)
-        if(currentUserDocSnap.exists()){
-          setCurrentUserData(currentUserDocSnap.data());
-        } 
-        
-        else{
-          console.log("Current user has no Docs")
+              setCurrentUserDocId(currentUserDocId);
+              setCurrentUserData(currentUserDoc.data());
+              fetchUsersWithSameUniversity();
+            } else {
+              console.log("This user has no docs");
+            }
+          } else {
+            console.log("No current user found");
+          }
+        } catch (error) {
+          console.error("Error getting current user data", error);
         }
-        } else {
-          console.log("N0 current usr found")
-        }
-      } catch(error) {
-        console.error("Error getting current user docs", error)
+      };
+  
+      if(isMounted){
+        fetchUserData();
       }
-    }
-
-    const fetchRandomUserData = async () => {
+      return() => {
+        setIsMounted(false);
+      }
+    }, [isMounted]);
+  
+    const fetchUsersWithSameUniversity = async () => {
       try {
-        if(currentUserData){
-          const userCollectionRef = collection(db,"userInfo");
-          const university =  currentUserData.university;
-          const universityQuery = query(userCollectionRef, where("univeristy", "==", university))
+        if (currentUserData) {
+          const userCollectionRef = collection(db, "userInfo");
+          const universityQuery = query(userCollectionRef, where("university", "==", currentUserData.university));
           const userQuerySnapshot = await getDocs(universityQuery);
-          const userDocs = [];
-          userQuerySnapshot.forEach((doc) => {
-          userDocs.push(doc.data());
-        }); 
-        const filteredUsers = userDocs.filter(user => user.id !== currentUser.uid)
-        const randomDocId = filteredUsers[Math.floor(Math.random() * filteredUsers.length)]
-        setRandomUserData(randomDocId);
+          const users = userQuerySnapshot.docs.map(doc => doc.data());
+          const randomUser = users[Math.floor(Math.random() * users.length)];
+          console.log("Random user", randomUser)
+          setUsersWithSameUniversity([randomUser]);
+            
         }
       } catch (error) {
-        console.error("Error fetching document: ", error);
+        console.error("Error fetching users with same university: ", error);
       }
     };
-    fetchCurrentUserData();
-    fetchRandomUserData();
-  }, [currentUserData]);
+  
+    // const auth=getAuth();
+    // const fetchCurrentUserData = async () => 
+    // {
+    //   try{
+    //     const currentUser = auth.currentUser;
+    //     console.log("Current user:", currentUser)
+    //     if(currentUser)
+    //     {
+    //       const currentUserDocRef = doc(db, "userInfo", currentUser.uid)
+    //       console.log("Current user DOCREF", currentUserDocRef)
+    //       console.log("Current user DOCID", currentUser.uid)
+    //       const currentUserDocSnap = await getDoc(currentUserDocRef);
+    //       console.log("Current user DOCREF", currentUserDocSnap)
+    //     if(currentUserDocSnap.exists()){
+    //       setCurrentUserData(currentUserDocSnap.data());
+    //     } 
+        
+    //     else{
+    //       console.log("Current user has no Docs")
+    //     }
+    //     } else {
+    //       console.log("N0 current usr found")
+    //     }
+    //   } catch(error) {
+    //     console.error("Error getting current user docs", error)
+    //   }
+    // }
+
+  //   const fetchRandomUserData = async () => {
+  //     try {
+  //       if(currentUserData){
+  //         const university =  currentUserData.university;
+  //         const userCollectionRef = collection(db,"userInfo");
+  //         const universityQuery = query(userCollectionRef, where("university", "==", university))
+  //         const userQuerySnapshot = await getDocs(universityQuery);
+  //         const userDocs = userQuerySnapshot.docs.map(doc => doc.data());
+  //         const randomUser = userDocs[Math.floor(Math.random() * filteredUsers.length)]
+  //       setRandomUserData(randomUser);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching document: ", error);
+  //     }
+  //   };
+  //   fetchCurrentUserData();
+  // }, []);
+  
 
     return (
       <View style={styles.container}>
@@ -85,12 +140,11 @@ export default function Main() {
             size={45}
       
           />
-          
         </View> 
-          <Text>Name: {randomUserData ? `${randomUserData.firstName} ${randomUserData.lastName}` : ""} </Text>
-          <Text>Major: {randomUserData ? randomUserData.major : ""}</Text>
-          <Text>Biography: {randomUserData ? randomUserData.bio : ""} </Text>
-          <Text>Hobbies: {randomUserData ? randomUserData.hobbies + "" : ""} </Text>
+        <Text>Name: {usersWithSameUniversity.length > 0 ? `${usersWithSameUniversity[0].firstName} ${usersWithSameUniversity[0].lastName}` : ""} </Text>
+      <Text>Major: {usersWithSameUniversity.length > 0 ? usersWithSameUniversity[0].major : ""}</Text>
+    <Text>Biography: {usersWithSameUniversity.length > 0 ? usersWithSameUniversity[0].bio : ""} </Text>
+    <Text>Hobbies: {usersWithSameUniversity.length > 0 && usersWithSameUniversity[0].hobbies ? usersWithSameUniversity[0].hobbies.join(", ") : ""}</Text>
           <MyButton color={colors.delftBlue}
             title={"View more"}
           />
