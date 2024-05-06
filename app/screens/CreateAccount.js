@@ -42,7 +42,6 @@ export default function CreateAccount({}) {
 
     const [selected, setSelected] = React.useState([]);
 
-
     const handleUniversitySelect = (selected) =>{
         console.log(selected);
         setSelectedUniversity(selected)
@@ -178,28 +177,6 @@ export default function CreateAccount({}) {
         nextScreen();
     }
 
-    // const saveUserDataToFireStore = (userData) => 
-    // {
-    //     firebase.firestore().collection("userInfo").add(userData).then((docRef) =>
-    //     {
-    //         console.log("Document written with ID: " + docRef.id)
-    //     })
-    //     .catch((error) => {
-    //             console.log("Error adding document", error)
-    //         });
-    // };
-
-
-    // const handleSaveUserData = () => 
-    // {
-    //     const userData ={
-    //         firstName: firstName,
-    //         lastName: lastName,
-    //         major: major,
-    //     };
-    //     // saveUserDataToFireStore(userData);
-    // }
-
     const deviceHeight = useWindowDimensions()
   
   return (
@@ -285,11 +262,6 @@ export default function CreateAccount({}) {
                     placeholderTextColor="#000000"
                     onChangeText={(text) => setBio(text)}
                     />
-                    {/* <MyButton
-                    title={"Go to login"}
-                    color={"black"}
-                    onPress={() => navigation.navigate("Login")}
-                    /> */}
                     <MyButton
                     title={"Create Account"}
                     color={colors.UCLABlue}
@@ -388,10 +360,10 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         marginLeft: 10,
-        color: "black",
-        backgroundColor: "white",
-        borderColor:"black",
-        borderWidth: 2,
+        color: "white",
+        backgroundColor: colors.UCLABlue,
+        borderColor: colors.UCLABlue,
+        borderWidth: 5,
     },
   flatlistStyle:
   {

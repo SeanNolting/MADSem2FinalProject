@@ -76,6 +76,7 @@ export default function Login({}) {
         width={100}
         height={50}
         borderRadius={25}
+        marginTop={10}
         />
         <MyButton title={"Create Account"} 
         onPress={signUp}
@@ -83,6 +84,7 @@ export default function Login({}) {
         width={150}
         height={50}
         borderRadius={25}
+        marginTop={10}
         />
         </>}
         {/* <MyButton

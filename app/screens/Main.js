@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import colors from '../config/colors';
 import firebase from 'firebase/app';
@@ -138,16 +138,24 @@ export default function Main() {
             icon="arrow-right"
             color="black"
             size={45}
-      
-          />
+          /> 
+          <View>
+           <Text style={styles.nameTextStyle}>Name: {usersWithSameUniversity.length > 0 ? `${usersWithSameUniversity[0].firstName} ${usersWithSameUniversity[0].lastName}` : ""} </Text>
+          <Text style={styles.majorTextStyle}>Major: {usersWithSameUniversity.length > 0 ? usersWithSameUniversity[0].major : ""}</Text>
+          <Text style={styles.bioTextStyle}>Biography: {usersWithSameUniversity.length > 0 ? usersWithSameUniversity[0].bio : ""} </Text>
+          <Text style={styles.hobbiesTextStyle}>Hobbies: {usersWithSameUniversity.length > 0 && usersWithSameUniversity[0].hobbies ? usersWithSameUniversity[0].hobbies.join(", ") : ""}</Text>
+          </View>
+          
         </View> 
-        <Text>Name: {usersWithSameUniversity.length > 0 ? `${usersWithSameUniversity[0].firstName} ${usersWithSameUniversity[0].lastName}` : ""} </Text>
-      <Text>Major: {usersWithSameUniversity.length > 0 ? usersWithSameUniversity[0].major : ""}</Text>
-    <Text>Biography: {usersWithSameUniversity.length > 0 ? usersWithSameUniversity[0].bio : ""} </Text>
-    <Text>Hobbies: {usersWithSameUniversity.length > 0 && usersWithSameUniversity[0].hobbies ? usersWithSameUniversity[0].hobbies.join(", ") : ""}</Text>
-          <MyButton color={colors.delftBlue}
-            title={"View more"}
-          />
+         <MyButton
+        style={styles.viewMore}
+        title={"Add Friend"}
+        color={colors.delftBlue}
+        width={150}
+        height={50}
+        marginLeft={122.5}
+        marginTop={10}
+         />
       </View>
     );
   };
@@ -165,18 +173,36 @@ const styles = StyleSheet.create({
     marginLeft: 73,
   },
   profileContainer: {
-    width: 350,
-    height: 600,
+    width: 375,
+    height: 650,
     borderWidth: 5,
-    marginLeft: 20,
+    marginLeft: 10,
     flexDirection: "row",
     marginTop: 15,
     backgroundColor: "white",
   },
-  viewMore: {
-    width: 50,
-    height: 50,
-    marginTop: 250,
-    marginLeft: 80,
+  // viewMore: {
+  //   width: 50,
+  //   height: 50,
+  //   marginTop: 250,
+  //   marginLeft: 80,
+  // },
+  nameTextStyle:{
+    marginTop: 450,
+    marginLeft: -210,
+    fontSize: 18,
   },
+  majorTextStyle:{
+    marginLeft: -210,
+    fontSize: 18,
+  },
+  bioTextStyle:{
+    marginLeft: -210,
+    fontSize: 18,
+  },
+  hobbiesTextStyle:{
+    marginLeft: -210,
+    fontSize: 18,
+  },
+
 });
