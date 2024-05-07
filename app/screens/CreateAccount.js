@@ -11,7 +11,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Avatar, IconButton } from 'react-native-paper';
 import { Modal } from 'react-native';
 import { Pressable } from 'react-native';
-import { FIREBASEAPP, auth, db } from '../../Firebase/config';
+import { FIREBASEAPP, auth, db, storage } from '../../Firebase/config';
 import { MultipleSelectList } from 'react-native-dropdown-select-list';
 
 import 'firebase/database'
@@ -19,7 +19,6 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 export default function CreateAccount({}) {
 
-    //Figure out a way to store the current users DocID then we chilling maybe 
     const navigation = useNavigation();
     const myDataUniverites = [
         {key: '1', value: "Iowa State"},
@@ -50,18 +49,6 @@ export default function CreateAccount({}) {
         console.log(selectedItems);
         setSelectedHobbies(selectedItems)
     }
-    // const handleHobbiesSelect = (selectedItems) => {
-    //     console.log(selectedItems);
-    //     if(typeof selectedItems === 'function'){
-    //         console.error("selected items is not a function", selectedItems)
-    //         return;
-    //     }
-    //     if(Array.isArray(selectedItems)){
-    //         setSelectedHobbies(selectedItems.map(item => item.value));
-    //     } else{
-    //         console.error("Selected items is not an array", selectedItems)
-    //     }
-    // }
     const myDataHobbies = [
       {key:'1', value:'Running'},
       {key:'2', value:'Reading'},
@@ -74,79 +61,59 @@ export default function CreateAccount({}) {
       {key:'9', value:'Soccer'},
       {key:'10', value:'Volleyball'},
   ]
-    // const filterData = (item) =>
-    // {
-    //     //if the input is empty
-    //     if(userInput === "")
-    //     {
-    //        return (
-    //         <View>
-    //         <Text>{item.name}</Text>
-    //         </View>
-    //         ) 
-    //     }
-    //     // if the user is in the search bar
-    //     if(item.name.toLowerCase().includes(userInput.toLowerCase()  )){
-    //         return(
-    //         <View>
-    //             <Text>{item.name}</Text>
-    //         </View>
-    //         )
-    //     }
 
-    // }
-
-    
-
-    // useEffect(() => {
-    //    requestMediaLibraryPermissionsAsync();
-    // }, []);
-    // const requestMediaLibraryPermissionsAsync = async () => {
-    //     if(Platform.OS !== 'web')
-    //     {
-    //         const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    //         if(status !== 'granted')
-    //         {
-    //             alert("Camera Roll access is required to upload a profile picture")
-    //         }
-    //     }
-    // }
-
-    const [modalVisible, setModalVisible] = useState(false);
-    const [image, setImage] = useState();
-    // console.log(image);
-    const pickImage = async () =>
-    {
+    const [image, setImage] = useState(null);
+    const pickImage = async () => {
         try{
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-            let result = await ImagePicker.launchCameraAsync({
-                cameraType: ImagePicker.CameraType.front,
+            const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (permissionResult.granted === false){
+                alert("Camera roll acess required");
+                return;
+                
+            }
+            const result = await ImagePicker.launchImageLibraryAsync({
                 allowsEditing: true,
-                aspect: [1, 1],
+                aspect: [1,1],
                 quality: 1,
-            })
-
-            if(!result.canceled)
-            {
-                await saveImage(result.uri);
+            });
+            if(!result.cancelled){
+                console.log('Image picker result:', result);
+                console.log("Selected image:", image);
+                setImage(result.uri);
+                
             }
         } catch (error){
-
+            console.error("Error picking image", error )
         }
-    };
-    const saveImage = async (image) => 
-    {
+    }
+
+    const uploadImage = async(uri) =>{
         try{
-            setImage(image);
-        } catch (error){
+            const currentUser = auth.currentUser;
+            if(!currentUser){
+                throw new Error("No current user found");
+            }
+            const filename = `${currentUser.uid}_profile_picture.jpg`;
+            const storageRef = storage().ref().child('profilePictures/' + filename)
+            const response = await fetch(uri);
+            const blob = await response.blob();
+            await storageRef.put(blob);
+            const downloadURL = await storageRef.getDownloadURL();
+            return downloadURL;
+        
+        } catch(error){
+            console.error("error uploading image", error)
             throw error;
         }
-    };
+
+        
+    } 
+
     const [userData, setUserData] = useState("");
-    
     const addAccountData = async () => {
         try {
             const currentUser = auth.currentUser;
+            const imageUri = await uploadImage(image);
             if (currentUser) 
             { 
                 await addDoc(collection(db, "userInfo"), {
@@ -157,6 +124,7 @@ export default function CreateAccount({}) {
                     bio: bio,
                     hobbies: selectedHobbies,
                     userId: currentUser.uid, 
+                    imageUri: imageUri,
                 });
                 console.log("User data has been added");
             } else {
@@ -182,8 +150,19 @@ export default function CreateAccount({}) {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding': 'height'}> 
        <KeyboardAwareScrollView contentContainerStyle={styles.container} extraScrollHeight={100} keyboardShouldPersistTaps="handled">
-                 <Text style={styles.text}>Create your profile</Text>
-                 <Image uri={image} style={styles.profilePicture} /> 
+                 <Text style={styles.text}>Choose your profile picture</Text>
+                 <TouchableHighlight onPress={pickImage}>
+                    <View>
+                        {image ? (
+                            <Image source={{uri: image}} style={styles.profilePicture}/>
+                        ) : (
+                            <View style={styles.placeholderContainer}>
+                                <IconButton icon="camera" size={24} color="black"/>
+                            </View>
+                        )}
+                    </View>
+                 </TouchableHighlight>
+                 {/* <Image uri={image} style={styles.profilePicture} /> 
                     <Modal
                     animationType="none"
                     transpaerent={true}
@@ -211,7 +190,7 @@ export default function CreateAccount({}) {
                     </Modal> 
                     <TouchableHighlight onPress={() => setModalVisible(true)}>
                     <Entypo name = "pencil" size={20} color="white"/>
-                    </TouchableHighlight>
+                    </TouchableHighlight> */}
 
                     <Text style={styles.text}>Enter your name</Text>
                     <View style={styles.namesContainer}>
@@ -313,12 +292,12 @@ const styles = StyleSheet.create({
     },
     profilePicture:
     {
-        width: 100,
-        height: 100,
+        width: 200,
+        height: 200,
         borderRadius: 50,
-        borderColor: "black",
-        borderWidth: 5,
-        backgroundColor: "white",
+        // borderColor: "black",
+        // borderWidth: 5,
+        // backgroundColor: "white",
         marginTop: 5,
     },
     modalStyle:
@@ -389,4 +368,17 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginLeft: 10,
   },
+  placeholderContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 200,
+    height: 200,
+    backgroundColor: '#ccc',
+    borderRadius: 50,
+},
+placeholderText: {
+    marginTop: 8,
+    fontSize: 16,
+    color: 'black',
+},
 })
