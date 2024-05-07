@@ -33,6 +33,8 @@ export default function EditProfile() {
   const [major, setMajor]= useState("");
   const [firstName, setFirstName]= useState("");
   const [lastName, setLastName]= useState("");
+
+  
   const myDataUniverites = [
     {key: '1', value: "Iowa State"},
     {key: "2", value: "MIT"},
