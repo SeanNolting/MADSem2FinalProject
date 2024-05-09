@@ -79,9 +79,10 @@ const fetchCurrentUserData = async () => {
 
 const updateUserProfile = async () =>
   {
-    try{
     const currentUser = auth.currentUser;
     const userID = currentUser.uid;
+    try{
+  
     const userDocRef = doc(db, 'userInfo', userID)
       await setDoc(
         userDocRef,
