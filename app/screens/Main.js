@@ -19,6 +19,9 @@ export default function Main() {
     const [currentUserDocId, setCurrentUserDocId] = useState(null);
     const [isMounted, setIsMounted] = useState(false);
     const [friendsList, setFriendsList] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isReloading, setIsReloading] = useState(false);
+
 
     useEffect(() => {
       setIsMounted(true);
@@ -43,6 +46,7 @@ export default function Main() {
 
               setCurrentUserDocId(currentUserDocId);
               setCurrentUserData(currentUserDoc.data());
+              setCurrentIndex(0);
               fetchUsersWithSameUniversity();
             } else {
               console.log("This user has no docs");
@@ -54,6 +58,28 @@ export default function Main() {
           console.error("Error getting current user data", error);
         }
       };
+
+      const handleReload = () => {
+setIsReloading(true)
+fetchUsersWithSameUniversity()
+.then(() => setIsReloading(false))
+.catch(error => {
+      console.error(“Error reloading users:”, error)
+       setIsReloading(false);
+});
+};
+       
+const handleNextUser = () => {
+if(usersWithSameUniversity.length>1) {
+setCurrentIndex((prevIndex) => (prevIndex + 1) % usersWithSameUniversity.length)
+}
+};
+
+const handlePrevUser = () => {
+if(usersWithSameUniversity.length>1) {
+setCurrentIndex((prevIndex) => (prevIndex - 1 + usersWithSameUniversity.length) % usersWithSameUniversity.length)
+}};
+
   
       if(isMounted){
         fetchUserData();
@@ -143,6 +169,8 @@ export default function Main() {
             icon="arrow-left"
             color="black"
             size={45}
+               onPress={handlePrevUser}
+
           />
            {usersWithSameUniversity.length > 0 && usersWithSameUniversity[0].imageUri && (
         <Image  source={currentUserData ? { uri: usersWithSameUniversity[0].imageUri } : require('../../images/Gatorade.png')}
@@ -154,6 +182,8 @@ export default function Main() {
             icon="arrow-right"
             color="black"
             size={45}
+               onPress={handleNextUser}
+
           /> 
           <View>
            <Text style={styles.nameTextStyle}>Name: {usersWithSameUniversity.length > 0 ? `${usersWithSameUniversity[0].firstName} ${usersWithSameUniversity[0].lastName}` : ""} </Text>
