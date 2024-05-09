@@ -22,7 +22,6 @@ export default function Main() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isReloading, setIsReloading] = useState(false);
 
-
     useEffect(() => {
       setIsMounted(true);
       const fetchUserData = async () => {
@@ -58,28 +57,6 @@ export default function Main() {
           console.error("Error getting current user data", error);
         }
       };
-
-      const handleReload = () => {
-setIsReloading(true)
-fetchUsersWithSameUniversity()
-.then(() => setIsReloading(false))
-.catch(error => {
-      console.error(“Error reloading users:”, error)
-       setIsReloading(false);
-});
-};
-       
-const handleNextUser = () => {
-if(usersWithSameUniversity.length>1) {
-setCurrentIndex((prevIndex) => (prevIndex + 1) % usersWithSameUniversity.length)
-}
-};
-
-const handlePrevUser = () => {
-if(usersWithSameUniversity.length>1) {
-setCurrentIndex((prevIndex) => (prevIndex - 1 + usersWithSameUniversity.length) % usersWithSameUniversity.length)
-}};
-
   
       if(isMounted){
         fetchUserData();
@@ -105,15 +82,34 @@ setCurrentIndex((prevIndex) => (prevIndex - 1 + usersWithSameUniversity.length) 
         console.error("Error fetching users with same university: ", error);
       }
     };
-
+ 
     const addFriend = () => {
       if (usersWithSameUniversity.length > 0) {
           const friendData = usersWithSameUniversity[0];
           setFriendsList([...friendsList, friendData.id]);
           navigation.navigate('Friends', { friendId: friendData.id });
-      }
-  };  
-     
+      }  
+  };     
+  const handleReload = () => {
+    setIsReloading(true),
+    fetchUsersWithSameUniversity()
+    .then(() => setIsReloading(false))
+    .catch(error => {
+          console.error("Error with reloading", error);
+           setIsReloading(false);
+    });
+    };
+           
+    const handleNextUser = () => {
+    if(usersWithSameUniversity.length > 1) {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % usersWithSameUniversity.length)
+    }
+    };
+    
+    const handlePrevUser = () => {
+    if(usersWithSameUniversity.length>1) {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + usersWithSameUniversity.length) % usersWithSameUniversity.length)
+    }};
     // const auth=getAuth();
     // const fetchCurrentUserData = async () => 
     // {
@@ -169,12 +165,11 @@ setCurrentIndex((prevIndex) => (prevIndex - 1 + usersWithSameUniversity.length) 
             icon="arrow-left"
             color="black"
             size={45}
-               onPress={handlePrevUser}
-
+            onPress={handlePrevUser}
           />
            {usersWithSameUniversity.length > 0 && usersWithSameUniversity[0].imageUri && (
         <Image  source={currentUserData ? { uri: usersWithSameUniversity[0].imageUri } : require('../../images/Gatorade.png')}
-        style={{height: 100, width: 100, borderRadius:50, marginBottom: 10, marginLeft: 5, borderColor:"#000000", borderWidth: 3}}
+        style={{height: 300, width: 200, marginBottom: 10, marginLeft: 10, marginTop: 155, borderColor:"#000000", borderWidth: 3}}
         />
       )}   
           <IconButton
@@ -182,11 +177,11 @@ setCurrentIndex((prevIndex) => (prevIndex - 1 + usersWithSameUniversity.length) 
             icon="arrow-right"
             color="black"
             size={45}
-               onPress={handleNextUser}
-
-          /> 
+            onPress={handleNextUser}
+          />  
           <View>
-           <Text style={styles.nameTextStyle}>Name: {usersWithSameUniversity.length > 0 ? `${usersWithSameUniversity[0].firstName} ${usersWithSameUniversity[0].lastName}` : ""} </Text>
+           <Text   multiline
+       numberOfLines={4}  maxLength={10} style={styles.nameTextStyle}>Name: {usersWithSameUniversity.length > 0 ? `${usersWithSameUniversity[0].firstName} ${usersWithSameUniversity[0].lastName}` : ""} </Text>
           <Text style={styles.majorTextStyle}>Major: {usersWithSameUniversity.length > 0 ? usersWithSameUniversity[0].major : ""}</Text>
           <Text style={styles.bioTextStyle}>Biography: {usersWithSameUniversity.length > 0 ? usersWithSameUniversity[0].bio : ""} </Text>
           <Text style={styles.hobbiesTextStyle}>Hobbies: {usersWithSameUniversity.length > 0 && usersWithSameUniversity[0].hobbies ? usersWithSameUniversity[0].hobbies.join(", ") : ""}</Text>
@@ -205,7 +200,7 @@ setCurrentIndex((prevIndex) => (prevIndex - 1 + usersWithSameUniversity.length) 
          />
       </View>
     );
-  };
+  }; 
 
 const styles = StyleSheet.create({
   container: {
@@ -216,8 +211,8 @@ const styles = StyleSheet.create({
     marginTop: 290,
   },
   rightArrow: {
-    marginTop: 293,
-    marginLeft: 73,
+    marginTop: 290,
+    marginLeft: 23,
   },
   profileContainer: {
     width: 375,
@@ -235,20 +230,20 @@ const styles = StyleSheet.create({
   //   marginLeft: 80,
   // },
   nameTextStyle:{
-    marginTop: 450,
-    marginLeft: -210,
+    marginTop: 480,
+    marginLeft: -370,
     fontSize: 18,
   },
   majorTextStyle:{
-    marginLeft: -210,
+    marginLeft: -370,
     fontSize: 18,
   },
   bioTextStyle:{
-    marginLeft: -210,
+    marginLeft: -370,
     fontSize: 18,
   },
   hobbiesTextStyle:{
-    marginLeft: -210,
+    marginLeft: -370,
     fontSize: 18,
   },
 

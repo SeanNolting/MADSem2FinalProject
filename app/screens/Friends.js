@@ -5,6 +5,7 @@ import MyButton from '../components/MyButton';
 import { IconButton } from 'react-native-paper';
 import { useRoute } from '@react-navigation/native';
 import { useEffect } from 'react';
+import { useState } from 'react';
 
 export default function Friends() {
 

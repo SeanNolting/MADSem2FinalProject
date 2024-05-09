@@ -9,6 +9,7 @@ import { collection, addDoc, getFirestore, setDoc, doc, getDoc, query, getDocs, 
 
 
 export default function EditProfile () {
+
   const [firstName, setFirstName]= useState("");
   const [lastName, setLastName]= useState("");
   const [major, setMajor]= useState("");
@@ -108,12 +109,13 @@ const updateUserProfile = async () =>
         setBio(userData.bio || '');
         
       console.log('User profile updated successfully!');
-    } catch (error) {
+    } 
+  } catch (error) {
       console.error('Error updating user profile:', error);
-    }
+    };
   };
 
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Edit Profile</Text>
@@ -242,5 +244,4 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginLeft: 10,
   },
-
-})
+});
