@@ -1,18 +1,18 @@
 import { FlatList, SafeAreaView, StyleSheet, Text, View, TextInput } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import colors from '../config/colors';
 import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-list';
 import { useState } from 'react';
 import MyButton from '../components/MyButton';
 import { FIREBASEAPP, auth, db, storage } from '../../Firebase/config';
-import { collection, addDoc, getFirestore, setDoc } from "firebase/firestore";
-import React, { useEffect } from 'react'
+import { collection, addDoc, getFirestore, setDoc, doc, getDoc, query, getDocs, where} from "firebase/firestore";
 
-export default function EditProfile() {
+
+export default function EditProfile () {
   const [firstName, setFirstName]= useState("");
   const [lastName, setLastName]= useState("");
   const [major, setMajor]= useState("");
-  const [selectedUnviersty, setSelectedUniversity] = useState("");
+  const [selectedUniversity, setSelectedUniversity] = useState("");
   const [selectedHobbies, setSelectedHobbies] = useState([]);
   const [bio, setBio] = useState("");
   const [extraInfo, setExtraInfo] = useState("");
@@ -34,49 +34,55 @@ export default function EditProfile() {
     {key:'5', value:'Knitting'},
     {key:'6', value:'Race Car Driving'},
 ]
-  const myDataUniverites = [
-    {key: '1', value: "Iowa State"},
-    {key: "2", value: "MIT"},
-    {key: "3", value: "Wisconsin"},
-]
+    const myDataUniverites = [
+      {key: '1', value: "Iowa State"},
+      {key: "2", value: "MIT"},
+      {key: "3", value: "Wisconsin"},
+      {key: "4", value: "UIUC"},
+      {key: "5", value: "Butler"},
+      {key: "6", value: "Denison"},
+      {key: "7", value: "Minnisota"},
+      {key: "8", value: "Purdue"},
+      {key: "9", value: "Indiana"},
+  ]
 
 useEffect(() => {
-  getUserData();
+  fetchCurrentUserData();
 }, []);
 
-const getUserData = async () => {
-  const currentUser = auth.currentUser;
-  const userID = currentUser.uid;
+const fetchCurrentUserData = async () => {
   try {
-  const userDocRef = doc(db, 'userInfo', userID);
-  const userDocSnapshot = await getDoc(userDocRef);
-
-  if (userDocSnapshot.exists()) {
-    const userData = userDocSnapshot.data();
-    setFirstName(userData.firstName || '');
-    setLastName(userData.lastName || '');
-    setMajor(userData.major || '');
-    setSelectedUniversity(userData.university || '');
-    setSelectedHobbies(userData.hobbies || []);
-    setBio(userData.bio || '');
-    setExtraInfo(userData.extraInfo || '');
-  } else {
-    console.error('User document not found');
-  }
-} catch (error) {
-  console.error('Error loading user data:', error);
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const userCollectionRef = collection(db, "userInfo");
+      const querySnapshot = await getDocs(query(userCollectionRef, where("userId", "==", currentUser.uid)))
+      if (!querySnapshot.empty) {
+        const currentUserDoc = querySnapshot.docs[0];
+        const userData = currentUserDoc.data();
+        setFirstName(userData.firstName || '');
+        setLastName(userData.lastName || '');
+        setMajor(userData.major || '');
+        setSelectedUniversity(userData.university || '');
+        setSelectedHobbies(userData.hobbies || []);
+        setBio(userData.bio || '');
+        setExtraInfo(userData.extraInfo || '');
+      } else {
+        console.log("This user has no docs");
+      }
+    } else {
+      console.log("No current user found");
+    }
+  } catch (error) {
+    console.error("Error getting current user data", error);
   }
 };
 
-
 const updateUserProfile = async () =>
   {
+    try{
     const currentUser = auth.currentUser;
     const userID = currentUser.uid;
-
-    try{
-      const userDocRef = doc(db, 'userInfo', userID)
-
+    const userDocRef = doc(db, 'userInfo', userID)
       await setDoc(
         userDocRef,
         {
@@ -86,7 +92,6 @@ const updateUserProfile = async () =>
           university: selectedUniversity,
           hobbies: selectedHobbies,
           bio,
-          extraInfo,
         },
         { merge: true }
       );
@@ -96,6 +101,7 @@ const updateUserProfile = async () =>
     }
   };
 
+  
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Edit Profile</Text>
@@ -119,24 +125,24 @@ const updateUserProfile = async () =>
         onChangeText={(text) => setMajor(text)}
         style={styles.majorInputStyle}
         />
-        <SelectList 
-        boxStyles={styles.flatlistStyle}
-        dropdownStyles={{backgroundColor: "white"}}
-        onSelect={handleUniversitySelect}
-        data ={myDataUniverites}
-        save='value'
-        selectedItem={selectedUniversity}
-        />
-        <MultipleSelectList
+          <SelectList
+          style={styles.flatlistStyle}
+         boxStyles={[{ backgroundColor: "white" }, { width: 250 }]}
+         dropdownStyles={{ backgroundColor: "white" }}
+         data={myDataUniverites}
+         setSelected={handleUniversitySelect}
+         save='value'
+      />
+           <MultipleSelectList
+           style={styles.flatlistStyle}
+        setSelected={handleHobbiesSelect}
+        onSelect={() => console.log(selected)}
         data={myDataHobbies}
         label="Hobbies"
-        save='key'
-        onSelect={handleHobbiesSelect}
+        save='value'
         notFoundText='Search for a hobby'
-        boxStyles={styles.flatlistStyle}
-        dropdownStyles={{backgroundColor: "white"}}
-        selectedItems={selectedHobbies.map((hobby) => ({ key: hobby, value: hobby }))}
-        />
+        boxStyles={[{ backgroundColor: "white" }, { width: 250 }]}
+        dropdownStyles={{ backgroundColor: "white" }} />
         <TextInput
           multiline
           style={styles.textInputStyle}
@@ -144,16 +150,6 @@ const updateUserProfile = async () =>
           placeholder='Biography' 
           placeholderTextColor="#000000"
           onChangeText={(text) => setBio(text)}
-          numberOfLines={10}
-          maxLength={300}
-        />
-        <TextInput
-          multiline
-          style={styles.textInputStyle}
-          value={extraInfo}
-          placeholder='Extra info' 
-          placeholderTextColor="#000000"
-          onChangeText={(text) => setExtraInfo(text)}
           numberOfLines={10}
           maxLength={300}
         />
@@ -208,10 +204,15 @@ const styles = StyleSheet.create({
   },
   flatlistStyle:
   {
-    backgroundColor: "white", 
-    width:250, 
-    marginLeft: 65,
-    marginTop: 10,
+    borderWidth: 2,
+    borderColor: "#000000",
+    width: 350,
+    height: 100,
+    marginLeft: 10,
+    padding: 5,
+    marginTop: 5,
+    backgroundColor: "white",
+    marginBottom: 15,
   },
   textInputStyle:
   {

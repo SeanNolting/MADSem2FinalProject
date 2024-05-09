@@ -3,8 +3,12 @@ import React from 'react'
 import colors from '../config/colors';
 import MyButton from '../components/MyButton';
 import { IconButton } from 'react-native-paper';
+import { useRoute } from '@react-navigation/native';
 
 export default function Friends() {
+  
+  const {friendsList} = route.params;
+
   const dummyData = [
     {
       id: 1,
@@ -63,12 +67,15 @@ export default function Friends() {
     return <View style = {styles.itemSperatorStyle}/>
   }
 
+  const route = useRoute();
+  
+
   return (
     <SafeAreaView>
       <FlatList 
       ListHeaderComponentStyle={styles.listHeaderStyle}
       ListHeaderComponent={headerComponent}
-      data={dummyData}
+      data={friendsList}
       renderItem={onePerson}
       ItemSeparatorComponent={itemSeperator}
       ListEmptyComponent={<Text> Add freinds to see them here </Text>}

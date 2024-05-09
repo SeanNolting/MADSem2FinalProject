@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, Image } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import colors from '../config/colors';
 import firebase from 'firebase/app';
@@ -9,13 +9,16 @@ import { FIREBASEAPP, db, auth } from '../../Firebase/config';
 import { getAuth } from 'firebase/auth';
 import config from '../../Firebase/config'
 import MyButton from '../components/MyButton';
+import {useNavigation} from "@react-navigation/native";
 
    
 export default function Main() {
+    const navigation = useNavigation();
     const [currentUserData, setCurrentUserData] = useState(null);
     const [usersWithSameUniversity, setUsersWithSameUniversity] = useState([]);
     const [currentUserDocId, setCurrentUserDocId] = useState(null);
     const [isMounted, setIsMounted] = useState(false);
+    const [friendsList, setFriendsList] = useState([]);
 
     useEffect(() => {
       setIsMounted(true);
@@ -76,7 +79,15 @@ export default function Main() {
         console.error("Error fetching users with same university: ", error);
       }
     };
-  
+
+    const addFriend = () => {
+      if (usersWithSameUniversity.length > 0) {
+          const friendData = usersWithSameUniversity[0];
+          setFriendsList([...friendsList, friendData]);
+          navigation.navigate('Friends', { friendsList: friendsList });
+      }
+  };  
+     
     // const auth=getAuth();
     // const fetchCurrentUserData = async () => 
     // {
@@ -133,6 +144,12 @@ export default function Main() {
             color="black"
             size={45}
           />
+           {currentUserData && (
+        <Image
+          source={{ uri: currentUserData.imageUri }}
+          style={styles.profileImage}
+        />
+      )}
           <IconButton
             style={styles.rightArrow}
             icon="arrow-right"
@@ -155,6 +172,7 @@ export default function Main() {
         height={50}
         marginLeft={122.5}
         marginTop={10}
+        onPress={addFriend}
          />
       </View>
     );

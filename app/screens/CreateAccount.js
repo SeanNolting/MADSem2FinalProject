@@ -76,11 +76,11 @@ export default function CreateAccount({}) {
                 aspect: [1,1],
                 quality: 1,
             });
-            if(!result.cancelled){
-                console.log('Image picker result:', result);
-                console.log("Selected image:", image);
-                setImage(result.uri);
-                
+            if (!result.cancelled && result.assets.length > 0) {
+                setImage(result.assets[0].uri);
+                console.log(result)
+                console.log(image);
+
             }
         } catch (error){
             console.error("Error picking image", error )
@@ -89,26 +89,13 @@ export default function CreateAccount({}) {
 
     const uploadImage = async(uri) =>{
         try{
-            const currentUser = auth.currentUser;
-            if(!currentUser){
-                throw new Error("No current user found");
-            }
-            const filename = `${currentUser.uid}_profile_picture.jpg`;
-            const storageRef = storage().ref().child('profilePictures/' + filename)
-            const response = await fetch(uri);
-            const blob = await response.blob();
-            await storageRef.put(blob);
-            const downloadURL = await storageRef.getDownloadURL();
-            return downloadURL;
-        
-        } catch(error){
-            console.error("error uploading image", error)
-            throw error;
+            return uri;
+        } catch(error)
+        {
+            console.error("Error uploading image", error);
+        throw error;
         }
-
-        
     } 
-
     const [userData, setUserData] = useState("");
     const addAccountData = async () => {
         try {
@@ -148,117 +135,83 @@ export default function CreateAccount({}) {
     const deviceHeight = useWindowDimensions()
   
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding': 'height'}> 
-       <KeyboardAwareScrollView contentContainerStyle={styles.container} extraScrollHeight={100} keyboardShouldPersistTaps="handled">
-                 <Text style={styles.text}>Choose your profile picture</Text>
-                 <TouchableHighlight onPress={pickImage}>
-                    <View>
-                        {image ? (
-                            <Image source={{uri: image}} style={styles.profilePicture}/>
-                        ) : (
-                            <View style={styles.placeholderContainer}>
-                                <IconButton icon="camera" size={24} color="black"/>
-                            </View>
-                        )}
-                    </View>
-                 </TouchableHighlight>
-                 {/* <Image uri={image} style={styles.profilePicture} /> 
-                    <Modal
-                    animationType="none"
-                    transpaerent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => setModalVisible(!modalVisible)}>
-                        <SafeAreaView style={styles.centerScreen}>
-                            <SafeAreaView style={styles.modalStyle}>
-                                <Text>Camera</Text> 
-                                <IconButton
-                                style={styles.modalButton}
-                                icon="camera"
-                                color="black"
-                                size={45}
-                                onPress={() => setModalVisible(!modalVisible)}
-                                />
-                                <IconButton
-                                style={styles.modalButton}
-                                icon="arrow-left"
-                                color="black"
-                                size={45}
-                                onPress={() => setModalVisible(!modalVisible)}
-                                />
-                            </SafeAreaView> 
-                        </SafeAreaView>
-                    </Modal> 
-                    <TouchableHighlight onPress={() => setModalVisible(true)}>
-                    <Entypo name = "pencil" size={20} color="white"/>
-                    </TouchableHighlight> */}
-
-                    <Text style={styles.text}>Enter your name</Text>
-                    <View style={styles.namesContainer}>
-                    <TextInput
-                        value={firstName}
-                        placeholder='First Name' 
-                        onChangeText={(text) => setFirstName(text)}
-                        style={styles.nameInputStyle}
-                        />
-                    <TextInput
-                        value={lastName}
-                        placeholder='Last Name' 
-                        onChangeText={(text) => setLastName(text)}
-                        style={styles.nameInputStyle}
-                        />
-                    </View>
-                    <Text style={styles.text}>What are you majoring in</Text>
-                    <TextInput
-                    value={major}
-                    placeholder='Major' 
-                    onChangeText={(text) => setMajor(text)}
-                    style={styles.majorInputStyle}
-                    />
-                    <Text style={styles.text}>Seach for your university</Text>
-                    <SelectList 
-                    boxStyles={[{backgroundColor: "white"}, {width:250}]}
-                    dropdownStyles={{backgroundColor: "white"}}
-                    data={myDataUniverites}
-                    setSelected={handleUniversitySelect}
-                    save='value'
-                    />
-                    <Text style={styles.text}>Pick some of your hobbies</Text>
-                    <MultipleSelectList
-                    setSelected={handleHobbiesSelect}
-                    onSelect={() => console.log(selected)}
-                    data={myDataHobbies}
-                    label="Hobbies"
-                    save='value'
-                    notFoundText='Search for a hobby'
-                    boxStyles={[{backgroundColor: "white"}, {width:250}]}
-                    dropdownStyles={{backgroundColor: "white"}}
-                    />
-                    <Text style={styles.text}>Tell us about yourself</Text>
-                    <TextInput
-                    style={styles.textInputStyle}
-                    value={bio}
-                    placeholder='Biography' 
-                    placeholderTextColor="#000000"
-                    onChangeText={(text) => setBio(text)}
-                    />
-                    <MyButton
-                    title={"Create Account"}
-                    color={colors.UCLABlue}
-                    onPress={() => dataAndNav()}
-                    />  
-        </KeyboardAwareScrollView> 
-    </KeyboardAvoidingView> 
+<KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <ScrollView contentContainerStyle={styles.ScrollViewStyle}>
+          <Text style={styles.text}>Choose your profile picture</Text>
+           <TouchableHighlight onPress={pickImage} style={{marginTop: 5}}>
+              <View>
+                  {image ? (
+                      <Image source={{ uri: image }} style={styles.profilePicture} />
+                  ) : (
+                      <View style={styles.placeholderContainer}>
+                          <IconButton icon="camera" size={24} color="black" />
+                      </View>
+                  )}
+              </View>
+          </TouchableHighlight> 
+          <Text style={styles.text}>Enter your name</Text>
+          <View style={styles.namesContainer}>
+              <TextInput
+                  value={firstName}
+                  placeholder='First Name'
+                  onChangeText={(text) => setFirstName(text)}
+                  style={styles.nameInputStyle} />
+              <TextInput
+                  value={lastName}
+                  placeholder='Last Name'
+                  onChangeText={(text) => setLastName(text)}
+                  style={styles.nameInputStyle} />
+          </View>
+          <Text style={styles.text}>What are you majoring in</Text>
+          <TextInput
+              value={major}
+              placeholder='Major'
+              onChangeText={(text) => setMajor(text)}
+              style={styles.majorInputStyle} />
+          <Text style={styles.text}>Seach for your university</Text>
+          <SelectList
+              boxStyles={[{ backgroundColor: "white" }, { width: 250 }]}
+              dropdownStyles={{ backgroundColor: "white" }}
+              data={myDataUniverites}
+              setSelected={handleUniversitySelect}
+              save='value' />
+          <Text style={styles.text}>Pick some of your hobbies</Text>
+          <MultipleSelectList
+              setSelected={handleHobbiesSelect}
+              onSelect={() => console.log(selected)}
+              data={myDataHobbies}
+              label="Hobbies"
+              save='value'
+              notFoundText='Search for a hobby'
+              boxStyles={[{ backgroundColor: "white" }, { width: 250 }]}
+              dropdownStyles={{ backgroundColor: "white" }} />
+          <Text style={styles.text}>Tell us about yourself</Text>
+          <TextInput
+              style={styles.textInputStyle}
+              value={bio}
+              placeholder='Biography'
+              placeholderTextColor="#000000"
+              onChangeText={(text) => setBio(text)} />
+          <MyButton
+              title={"Create Account"}
+              color={colors.UCLABlue}
+              onPress={() => dataAndNav()} />
+      </ScrollView>
+</KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
 
-    ScrollView:{
-        flex: 1,
+    ScrollViewStyle:{
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "flex-start",
+        backgroundColor: colors.delftBlue,
+        paddingBottom: 40,
     },
     container:
     {
-        flex: 1,
         alignItems: "center",
         justifyContent: "flex-start",
         backgroundColor: colors.delftBlue,
@@ -371,8 +324,8 @@ const styles = StyleSheet.create({
   placeholderContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     backgroundColor: '#ccc',
     borderRadius: 50,
 },
