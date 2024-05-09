@@ -1,5 +1,4 @@
 import { FlatList, SafeAreaView, StyleSheet, Text, View, TextInput } from 'react-native'
-import React from 'react'
 import colors from '../config/colors';
 import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-list';
 import { useState } from 'react';
