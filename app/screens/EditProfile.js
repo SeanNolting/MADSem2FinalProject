@@ -96,6 +96,17 @@ const updateUserProfile = async () =>
         },
         { merge: true }
       );
+
+      const userDocSnapshot = await userDocRef.get();
+      if(userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data();
+        setFirstName(userData.firstName || '');
+        setLastName(userData.lastName || '');
+        setMajor(userData.major || '');
+        setSelectedUniversity(userData.university || '');
+        setSelectedHobbies(userData.hobbies || []);
+        setBio(userData.bio || '');
+        
       console.log('User profile updated successfully!');
     } catch (error) {
       console.error('Error updating user profile:', error);
