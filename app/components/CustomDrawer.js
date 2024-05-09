@@ -31,7 +31,7 @@ const CustomDrawer = (props) => {
             console.log("No current user found");
           }
         } catch (error) {
-          console.error("Error getting current user data", error);
+           console.error("Error getting current user data", error);
         }
       };
   

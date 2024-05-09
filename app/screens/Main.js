@@ -83,8 +83,8 @@ export default function Main() {
     const addFriend = () => {
       if (usersWithSameUniversity.length > 0) {
           const friendData = usersWithSameUniversity[0];
-          setFriendsList([...friendsList, friendData]);
-          navigation.navigate('Friends', { friendsList: friendsList });
+          setFriendsList([...friendsList, friendData.id]);
+          navigation.navigate('Friends', { friendId: friendData.id });
       }
   };  
      
@@ -144,12 +144,11 @@ export default function Main() {
             color="black"
             size={45}
           />
-           {currentUserData && (
-        <Image
-          source={{ uri: currentUserData.imageUri }}
-          style={styles.profileImage}
+           {usersWithSameUniversity.length > 0 && usersWithSameUniversity[0].imageUri && (
+        <Image  source={currentUserData ? { uri: usersWithSameUniversity[0].imageUri } : require('../../images/Gatorade.png')}
+        style={{height: 100, width: 100, borderRadius:50, marginBottom: 10, marginLeft: 5, borderColor:"#000000", borderWidth: 3}}
         />
-      )}
+      )}   
           <IconButton
             style={styles.rightArrow}
             icon="arrow-right"

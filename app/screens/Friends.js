@@ -4,10 +4,32 @@ import colors from '../config/colors';
 import MyButton from '../components/MyButton';
 import { IconButton } from 'react-native-paper';
 import { useRoute } from '@react-navigation/native';
+import { useEffect } from 'react';
 
 export default function Friends() {
-  
-  const {friendsList} = route.params;
+
+  const route = useRoute();
+  const {friendId}= route.params;
+  const [friendsList, setFriendsList]=  useState([]);
+
+  useEffect(() => {
+    if (friendId) {
+        // Fetch friend's data based on ID
+        const fetchFriendData = async () => {
+            try {
+                const friendDocRef = doc(db, "userInfo", friendId);
+                const friendDocSnap = await getDoc(friendDocRef);
+                if (friendDocSnap.exists()) {
+                    const friendData = friendDocSnap.data();
+                    setFriendsList([...friendsList, friendData]);
+                }
+            } catch (error) {
+                console.error("Error fetching friend data:", error);
+            }
+        };
+        fetchFriendData();
+    }
+}, [friendId]);
 
   const dummyData = [
     {
@@ -67,18 +89,24 @@ export default function Friends() {
     return <View style = {styles.itemSperatorStyle}/>
   }
 
-  const route = useRoute();
-  
+
 
   return (
     <SafeAreaView>
       <FlatList 
-      ListHeaderComponentStyle={styles.listHeaderStyle}
-      ListHeaderComponent={headerComponent}
       data={friendsList}
-      renderItem={onePerson}
-      ItemSeparatorComponent={itemSeperator}
-      ListEmptyComponent={<Text> Add freinds to see them here </Text>}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({item}) => (
+        <View style={styles.friendContainer}>
+        <View>
+          <Image source = {item.image} style = {styles.image}/>
+          </View>
+        <View>
+          <Text style ={styles.friendName}>{item.name}</Text>
+          <Text style ={styles.friendMajor}>{item.major}</Text>
+       </View>
+       </View>
+      )}
       />
       <MyButton title={"Go to favorites"} color={"black"}/>
     </SafeAreaView>
