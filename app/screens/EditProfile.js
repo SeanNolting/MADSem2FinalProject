@@ -4,9 +4,14 @@ import colors from '../config/colors';
 import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-list';
 import { useState } from 'react';
 import MyButton from '../components/MyButton';
+import { FIREBASEAPP, auth, db, storage } from '../../Firebase/config';
+import { collection, addDoc, getFirestore, setDoc } from "firebase/firestore";
+import React, { useEffect } from 'react'
 
 export default function EditProfile() {
- 
+  const [firstName, setFirstName]= useState("");
+  const [lastName, setLastName]= useState("");
+  const [major, setMajor]= useState("");
   const [selectedUnviersty, setSelectedUniversity] = useState("");
   const [selectedHobbies, setSelectedHobbies] = useState([]);
   const [bio, setBio] = useState("");
@@ -29,17 +34,67 @@ export default function EditProfile() {
     {key:'5', value:'Knitting'},
     {key:'6', value:'Race Car Driving'},
 ]
-  const [userInput, setUserInput] = useState("");
-  const [major, setMajor]= useState("");
-  const [firstName, setFirstName]= useState("");
-  const [lastName, setLastName]= useState("");
-
-  
   const myDataUniverites = [
     {key: '1', value: "Iowa State"},
     {key: "2", value: "MIT"},
     {key: "3", value: "Wisconsin"},
 ]
+
+useEffect(() => {
+  getUserData();
+}, []);
+
+const getUserData = async () => {
+  const currentUser = auth.currentUser;
+  const userID = currentUser.uid;
+  try {
+  const userDocRef = doc(db, 'userInfo', userID);
+  const userDocSnapshot = await getDoc(userDocRef);
+
+  if (userDocSnapshot.exists()) {
+    const userData = userDocSnapshot.data();
+    setFirstName(userData.firstName || '');
+    setLastName(userData.lastName || '');
+    setMajor(userData.major || '');
+    setSelectedUniversity(userData.university || '');
+    setSelectedHobbies(userData.hobbies || []);
+    setBio(userData.bio || '');
+    setExtraInfo(userData.extraInfo || '');
+  } else {
+    console.error('User document not found');
+  }
+} catch (error) {
+  console.error('Error loading user data:', error);
+  }
+};
+
+
+const updateUserProfile = async () =>
+  {
+    const currentUser = auth.currentUser;
+    const userID = currentUser.uid;
+
+    try{
+      const userDocRef = doc(db, 'userInfo', userID)
+
+      await setDoc(
+        userDocRef,
+        {
+          firstName,
+          lastName,
+          major,
+          university: selectedUniversity,
+          hobbies: selectedHobbies,
+          bio,
+          extraInfo,
+        },
+        { merge: true }
+      );
+      console.log('User profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -70,6 +125,7 @@ export default function EditProfile() {
         onSelect={handleUniversitySelect}
         data ={myDataUniverites}
         save='value'
+        selectedItem={selectedUniversity}
         />
         <MultipleSelectList
         data={myDataHobbies}
@@ -79,6 +135,7 @@ export default function EditProfile() {
         notFoundText='Search for a hobby'
         boxStyles={styles.flatlistStyle}
         dropdownStyles={{backgroundColor: "white"}}
+        selectedItems={selectedHobbies.map((hobby) => ({ key: hobby, value: hobby }))}
         />
         <TextInput
           multiline
@@ -104,9 +161,10 @@ export default function EditProfile() {
         title={"Edit Profile"}
         color={colors.UCLABlue}
         marginTop={20}
+        onPress={updateUserProfile}
         />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
